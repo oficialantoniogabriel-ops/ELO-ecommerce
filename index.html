@@ -100,7 +100,19 @@
     document.getElementById("year").textContent = new Date().getFullYear();
 
     // Renderizar tudo na inicialização
-    renderProducts();
+function renderProducts() {
+  const container = document.getElementById("products");
+  container.innerHTML = products.map(p => `
+    <div class="border rounded-xl shadow bg-white p-4 text-center hover:shadow-lg transition">
+      <a href="produto.html?id=${p.id}">
+        <img src="${p.img}" class="mx-auto rounded mb-2"/>
+        <h3 class="font-semibold">${p.name}</h3>
+      </a>
+      <p class="text-gray-600">${convert(p.price)}</p>
+      <button onclick="addToCart(${p.id})" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Adicionar</button>
+    </div>
+  `).join("");
+    }
     renderCart();
   </script>
 
