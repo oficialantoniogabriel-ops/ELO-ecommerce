@@ -1,3 +1,4 @@
+<!-- ========================= index.html ========================= -->
 <!DOCTYPE html>
 <html lang="pt-AO">
 <head>
@@ -13,143 +14,56 @@
     .hero {background:#f8f9fa;padding:60px 0;text-align:center;}
     .section {padding:60px 15px;}
     .card img {max-height:200px; object-fit:cover;}
-    .founder img {border-radius:50%; max-width:200px;}
   </style>
 </head>
 <body>
-
-<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container">
-    <a class="navbar-brand" href="#">ELO Commerce</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
+    <a class="navbar-brand" href="index.html">ELO Commerce</a>
+    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="nav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item"><a class="nav-link" href="#produtos">Produtos</a></li>
-        <li class="nav-item"><a class="nav-link" href="#planos">Planos</a></li>
-        <li class="nav-item"><a class="nav-link" href="#fundador">Fundador</a></li>
-        <li class="nav-item"><a class="nav-link" href="#funil">Cadastre-se</a></li>
+        <li class="nav-item"><a class="nav-link" href="planos.html">Planos</a></li>
+        <li class="nav-item"><a class="nav-link" href="fundador.html">Fundador</a></li>
+        <li class="nav-item"><a class="nav-link" href="funil.html">Cadastre-se</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
-<!-- Hero Section -->
 <section class="hero">
   <div class="container">
     <h1>Conectando empreendedores africanos e compradores do mundo todo</h1>
     <p>Crie sua loja digital e venda produtos físicos e digitais com facilidade.</p>
-    <a href="#funil" class="btn btn-primary btn-lg">Comece Grátis</a>
+    <a href="funil.html" class="btn btn-primary btn-lg">Comece Grátis</a>
   </div>
 </section>
 
-<!-- Produtos -->
 <section id="produtos" class="section">
   <div class="container">
     <h2 class="text-center mb-4">Produtos em Destaque</h2>
-    <div class="row" id="product-list">
-      <!-- Produtos serão carregados via Firestore -->
-    </div>
+    <div class="row" id="product-list"></div>
   </div>
 </section>
 
-<!-- Benefícios -->
 <section class="section bg-light">
-  <div class="container">
-    <h2 class="text-center mb-4">Por que escolher o ELO Commerce?</h2>
-    <div class="row text-center">
-      <div class="col-md-4">
-        <h5>Para Compradores</h5>
-        <p>Produtos africanos de qualidade, pagamentos seguros e entrega confiável.</p>
-      </div>
-      <div class="col-md-4">
-        <h5>Para Vendedores</h5>
-        <p>Loja pronta para vender, exposição global e suporte técnico.</p>
-      </div>
-      <div class="col-md-4">
-        <h5>Impacto Social</h5>
-        <p>Fortalecendo o empreendedorismo digital na África.</p>
-      </div>
+  <div class="container text-center">
+    <h2>Por que escolher o ELO Commerce?</h2>
+    <div class="row mt-4">
+      <div class="col-md-4"><h5>Para Compradores</h5><p>Produtos africanos de qualidade, pagamentos seguros e entrega confiável.</p></div>
+      <div class="col-md-4"><h5>Para Vendedores</h5><p>Loja pronta para vender, exposição global e suporte técnico.</p></div>
+      <div class="col-md-4"><h5>Impacto Social</h5><p>Fortalecendo o empreendedorismo digital na África.</p></div>
     </div>
   </div>
 </section>
 
-<!-- Planos -->
-<section id="planos" class="section">
-  <div class="container">
-    <h2 class="text-center mb-4">Planos e Preços</h2>
-    <div class="row text-center">
-      <div class="col-md-4">
-        <div class="card p-3">
-          <h5>Grátis</h5>
-          <p>0 AOA/mês</p>
-          <p>Loja básica até 3 produtos</p>
-          <div id="paypal-button-gratis"></div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card p-3">
-          <h5>Profissional</h5>
-          <p>5.000 AOA/mês</p>
-          <p>Loja completa, até 50 produtos, destaque na página inicial</p>
-          <div id="paypal-button-profissional"></div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card p-3">
-          <h5>Premium</h5>
-          <p>10.000 AOA/mês</p>
-          <p>Produtos ilimitados, suporte prioritário e programa de afiliados</p>
-          <div id="paypal-button-premium"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Fundador -->
-<section id="fundador" class="section bg-light text-center founder">
-  <div class="container">
-    <h2 class="mb-4">António Mayandjo Jamba Ndala</h2>
-    <img src="https://via.placeholder.com/200" alt="Fundador">
-    <p class="mt-3">Acredito no poder da economia digital africana. O ELO Commerce nasceu para permitir que cada empreendedor tenha acesso à tecnologia e às oportunidades globais.</p>
-    <div>
-      <a href="#" class="btn btn-outline-primary m-1">Facebook</a>
-      <a href="#" class="btn btn-outline-primary m-1">LinkedIn</a>
-      <a href="#" class="btn btn-outline-primary m-1">Instagram</a>
-    </div>
-  </div>
-</section>
-
-<!-- Funil -->
-<section id="funil" class="section text-center">
-  <div class="container">
-    <h2 class="mb-4">Crie sua loja grátis em minutos</h2>
-    <form id="lead-form" class="row g-3 justify-content-center">
-      <div class="col-md-3">
-        <input type="text" class="form-control" placeholder="Nome" id="lead-name" required>
-      </div>
-      <div class="col-md-3">
-        <input type="email" class="form-control" placeholder="Email" id="lead-email" required>
-      </div>
-      <div class="col-md-2">
-        <button type="submit" class="btn btn-primary w-100">Cadastrar</button>
-      </div>
-    </form>
-    <p id="lead-message" class="mt-3"></p>
-  </div>
-</section>
-
-<!-- Footer -->
 <footer class="bg-dark text-white text-center py-3">
   &copy; 2025 ELO Commerce. Todos os direitos reservados.
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Firebase Config
   const firebaseConfig = {
     apiKey: "YOUR_API_KEY",
     authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -161,56 +75,127 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  // Carregar produtos
   const productList = document.getElementById('product-list');
-  db.collection('produtos').where('ativo', '==', true).get().then(snapshot => {
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      const col = document.createElement('div');
-      col.className = 'col-md-4 mb-3';
-      col.innerHTML = `
+  db.collection('produtos').where('ativo','==',true).get().then(snap=>{
+    snap.forEach(doc=>{
+      const p=doc.data();
+      const card=document.createElement('div');
+      card.className='col-md-4 mb-3';
+      card.innerHTML=`
         <div class="card h-100">
-          <img src="${data.imagem}" class="card-img-top" alt="${data.nome}">
+          <img src="${p.imagem}" class="card-img-top" alt="${p.nome}">
           <div class="card-body">
-            <h5 class="card-title">${data.nome}</h5>
-            <p class="card-text">${data.descricao}</p>
-            <p><strong>${data.preco} AOA</strong></p>
-            <div id="paypal-button-${doc.id}"></div>
+            <h5>${p.nome}</h5><p>${p.descricao}</p>
+            <p><strong>${p.preco} AOA</strong></p>
+            <div id="paypal-${doc.id}"></div>
           </div>
-        </div>
-      `;
-      productList.appendChild(col);
+        </div>`;
+      productList.appendChild(card);
       paypal.Buttons({
-        createOrder: function(data, actions) {
-          return actions.order.create({
-            purchase_units: [{ amount: { value: data.preco } }]
-          });
-        },
-        onApprove: function(data, actions) {
-          return actions.order.capture().then(function(details) {
-            alert('Pagamento concluído: ' + details.payer.name.given_name);
-          });
-        }
-      }).render('#paypal-button-' + doc.id);
+        createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{value:p.preco}}]}),
+        onApprove:(d,a)=>a.order.capture().then(det=>alert('Pagamento concluído: '+det.payer.name.given_name))
+      }).render('#paypal-'+doc.id);
     });
-  });
-
-  // PayPal planos
-  paypal.Buttons({createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{value:'0'}}]}),onApprove:(d,a)=>a.order.capture().then(()=>alert('Plano Grátis ativado!'))}).render('#paypal-button-gratis');
-  paypal.Buttons({createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{value:'5000'}}]}),onApprove:(d,a)=>a.order.capture().then(()=>alert('Plano Profissional ativado!'))}).render('#paypal-button-profissional');
-  paypal.Buttons({createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{value:'10000'}}]}),onApprove:(d,a)=>a.order.capture().then(()=>alert('Plano Premium ativado!'))}).render('#paypal-button-premium');
-
-  // Funil de leads
-  const leadForm = document.getElementById('lead-form');
-  leadForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const name = document.getElementById('lead-name').value;
-    const email = document.getElementById('lead-email').value;
-    db.collection('leads').add({nome:name,email:email,criadoEm:new Date()})
-      .then(()=>document.getElementById('lead-message').textContent='Obrigado! Verifique seu email.')
-      .catch(()=>document.getElementById('lead-message').textContent='Erro ao cadastrar.');
-    leadForm.reset();
   });
 </script>
 </body>
-    </html>
+</html>
+
+
+<!-- ========================= planos.html ========================= -->
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planos e Preços - ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=AOA"></script>
+</head>
+<body>
+<div class="container text-center py-5">
+  <h1>Planos e Preços</h1>
+  <div class="row mt-4">
+    <div class="col-md-4">
+      <div class="card p-3"><h5>Grátis</h5><p>0 AOA/mês</p><p>Loja básica até 3 produtos</p><div id="paypal-gratis"></div></div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3"><h5>Profissional</h5><p>5.000 AOA/mês</p><p>Loja completa e destaque</p><div id="paypal-prof"></div></div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3"><h5>Premium</h5><p>10.000 AOA/mês</p><p>Produtos ilimitados e suporte prioritário</p><div id="paypal-prem"></div></div>
+    </div>
+  </div>
+</div>
+<footer class="bg-dark text-white text-center py-3">&copy; 2025 ELO Commerce</footer>
+<script>
+paypal.Buttons({createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{value:'0'}}]}),onApprove:(d,a)=>a.order.capture().then(()=>alert('Plano Grátis ativado!'))}).render('#paypal-gratis');
+paypal.Buttons({createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{value:'5000'}}]}),onApprove:(d,a)=>a.order.capture().then(()=>alert('Plano Profissional ativado!'))}).render('#paypal-prof');
+paypal.Buttons({createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{value:'10000'}}]}),onApprove:(d,a)=>a.order.capture().then(()=>alert('Plano Premium ativado!'))}).render('#paypal-prem');
+</script>
+</body>
+</html>
+
+
+<!-- ========================= fundador.html ========================= -->
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fundador - ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>.founder img{border-radius:50%;max-width:200px;}</style>
+</head>
+<body>
+<div class="container text-center py-5 founder">
+  <h1>António Mayandjo Jamba Ndala</h1>
+  <img src="https://via.placeholder.com/200" alt="Fundador">
+  <p class="mt-3">Acredito no poder da economia digital africana. O ELO Commerce nasceu para permitir que cada empreendedor tenha acesso à tecnologia e às oportunidades globais.</p>
+  <div>
+    <a href="#" class="btn btn-outline-primary m-1">Facebook</a>
+    <a href="#" class="btn btn-outline-primary m-1">LinkedIn</a>
+    <a href="#" class="btn btn-outline-primary m-1">Instagram</a>
+  </div>
+</div>
+<footer class="bg-dark text-white text-center py-3">&copy; 2025 ELO Commerce</footer>
+</body>
+</html>
+
+
+<!-- ========================= funil.html ========================= -->
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastre-se - ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<div class="container text-center py-5">
+  <h1>Crie sua loja grátis em minutos</h1>
+  <form id="lead-form" class="row g-3 justify-content-center mt-4">
+    <div class="col-md-3"><input type="text" id="lead-name" class="form-control" placeholder="Nome" required></div>
+    <div class="col-md-3"><input type="email" id="lead-email" class="form-control" placeholder="Email" required></div>
+    <div class="col-md-2"><button class="btn btn-primary w-100" type="submit">Cadastrar</button></div>
+  </form>
+  <p id="lead-message" class="mt-3"></p>
+</div>
+<footer class="bg-dark text-white text-center py-3">&copy; 2025 ELO Commerce</footer>
+<script>
+  const firebaseConfig={apiKey:"YOUR_API_KEY",authDomain:"YOUR_PROJECT_ID.firebaseapp.com",projectId:"YOUR_PROJECT_ID",storageBucket:"YOUR_PROJECT_ID.appspot.com",messagingSenderId:"YOUR_SENDER_ID",appId:"YOUR_APP_ID"};
+  firebase.initializeApp(firebaseConfig);
+  const db=firebase.firestore();
+  const form=document.getElementById('lead-form');
+  form.addEventListener('submit',e=>{
+    e.preventDefault();
+    const nome=document.getElementById('lead-name').value;
+    const email=document.getElementById('lead-email').value;
+    db.collection('leads').add({nome,email,criadoEm:new Date()})
+      .then(()=>document.getElementById('lead-message').textContent='Obrigado! Verifique seu email.')
+      .catch(()=>document.getElementById('lead-message').textContent='Erro ao cadastrar.');
+    form.reset();
+  });
+</script>
+</body>
+  </html>
