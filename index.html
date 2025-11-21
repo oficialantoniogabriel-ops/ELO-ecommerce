@@ -1,121 +1,104 @@
 <!DOCTYPE html>
 <html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ELO Commerce</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body <!-- Botão de pagamento PayPal -->
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-  <input type="hidden" name="cmd" value="_s-xclick">
-  <input type="hidden" name="hosted_button_id" value="AHAC826M72KA6">
-  <input type="image"
-         src="https://www.paypalobjects.com/pt_BR/i/btn/btn_buynowCC_LG.gif"
-         border="0"
-         name="submit"
-         alt="Pagar com PayPal – a forma mais segura de pagar online">
-</form> class="bg-gray-50 text-gray-900 p-6">
-
-  <h1 class="text-3xl font-bold text-center mb-6">🛍️ ELO Commerce</h1>
-
-  <div class="text-center mb-4">
-    <label class="font-semibold">Moeda:</label>
-    <select id="currency" class="border p-2 rounded">
-      <option value="AOA">Kwanza (AOA)</option>
-      <option value="USD">Dólar (USD)</option>
-      <option value="EUR">Euro (EUR)</option>
-    </select>
-  </div>
-
-  <div id="products" class="grid sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8"></div>
-
-  <h2 class="text-xl font-semibold text-center mb-2">🛒 Carrinho</h2>
-  <div id="cart"></div>
-
-  <footer class="text-center mt-10 text-sm text-gray-500">
-    © <span id="year"></span> ELO Commerce — Todos os direitos reservados
-  </footer>
-
-  <script>
-    // Lista de produtos
-    const products = [
-      { id: 1, name: "Ebook de Marketing Digital", price: 7500, img: "https://via.placeholder.com/250" },
-      { id: 2, name: "Curso de Design Gráfico", price: 15000, img: "https://via.placeholder.com/250" },
-      { id: 3, name: "Fone Bluetooth ELO", price: 22000, img: "https://via.placeholder.com/250" }
-    ];
-
-    let currency = "AOA";
-    const rates = { AOA: 1, USD: 0.0011, EUR: 0.0010 };
-    let cart = [];
-
-    function convert(amount) {
-      return (amount * rates[currency]).toFixed(2) + " " + currency;
-    }
-
-    // Renderiza os produtos
-    function renderProducts() {
-      const container = document.getElementById("products");
-      container.innerHTML = products.map(p => `
-        <div class="border rounded-xl shadow bg-white p-4 text-center hover:shadow-lg transition">
-          <a href="produto.html?id=${p.id}">
-            <img src="${p.img}" class="mx-auto rounded mb-2"/>
-            <h3 class="font-semibold">${p.name}</h3>
-          </a>
-          <p class="text-gray-600">${convert(p.price)}</p>
-          <button onclick="addToCart(${p.id})" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Adicionar</button>
-        </div>
-      `).join("");
-    }
-
-    // Renderiza o carrinho
-    function renderCart() {
-      const container = document.getElementById("cart");
-      if (cart.length === 0) {
-        container.innerHTML = "<p class='text-center text-gray-500'>Carrinho vazio.</p>";
-        return;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ELO Commerce</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f9fafb;
+        color: #222;
+        margin: 0;
+        padding: 0;
       }
-      const items = cart.map(item => `
-        <div class="flex justify-between border-b py-1">
-          <span>${item.name}</span>
-          <span>${convert(item.price)}</span>
-        </div>
-      `).join("");
-      const total = cart.reduce((s, p) => s + p.price, 0);
-      container.innerHTML = `
-        ${items}
-        <p class="text-center font-bold mt-4">Total: ${convert(total)}</p>
-        <div class="text-center mt-2">
-          <button onclick="checkout()" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">Finalizar Pagamento</button>
-        </div>
-      `;
-    }
+      header {
+        text-align: center;
+        padding: 20px;
+        background-color: #004aad;
+        color: white;
+      }
+      h1 {
+        margin: 0;
+        font-size: 28px;
+      }
+      main {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 0 20px;
+      }
+      section {
+        background-color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+      h2 {
+        margin-top: 0;
+        color: #004aad;
+      }
+      button {
+        background-color: #004aad;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #003580;
+      }
+      footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #f1f1f1;
+        font-size: 14px;
+      }
+    </style>
+  </head>
 
-    // Funções do carrinho
-    function addToCart(id) {
-      const product = products.find(p => p.id === id);
-      cart.push(product);
-      renderCart();
-    }
+  <body>
+    <header>
+      <h1>🛍️ ELO Commerce</h1>
+      <p>Compre produtos digitais e físicos com segurança</p>
 
-    function checkout() {
-      alert("✅ Pagamento confirmado! Obrigado por comprar na ELO Commerce!");
-      cart = [];
-      renderCart();
-    }
+      <!-- Botão de pagamento PayPal centralizado -->
+      <div style="margin-top: 15px;">
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+          <input type="hidden" name="cmd" value="_s-xclick">
+          <input type="hidden" name="hosted_button_id" value="AHAC826M72KA6">
+          <input type="image"
+                 src="https://www.paypalobjects.com/pt_BR/i/btn/btn_buynowCC_LG.gif"
+                 border="0"
+                 name="submit"
+                 alt="Pagar com PayPal – a forma mais segura de pagar online">
+        </form>
+      </div>
+    </header>
 
-    document.getElementById("currency").addEventListener("change", (e) => {
-      currency = e.target.value;
-      renderProducts();
-      renderCart();
-    });
+    <main>
+      <section>
+        <h2>Ebook de Marketing Digital</h2>
+        <p><strong>7.500,00 AOA</strong></p>
+        <button>Adicionar ao carrinho</button>
+      </section>
 
-    document.getElementById("year").textContent = new Date().getFullYear();
+      <section>
+        <h2>Curso de Design Gráfico</h2>
+        <p><strong>15.000,00 AOA</strong></p>
+        <button>Adicionar ao carrinho</button>
+      </section>
 
-    // Inicializa
-    renderProducts();
-    renderCart();
-  </script>
+      <section>
+        <h2>Fone Bluetooth ELO</h2>
+        <p><strong>22.000,00 AOA</strong></p>
+        <button>Adicionar ao carrinho</button>
+      </section>
+    </main>
 
-</body>
-                   </html>
+    <footer>
+      <p>© 2025 ELO Commerce — Todos os direitos reservados</p>
+    </footer>
+  </body>
+  </html>
