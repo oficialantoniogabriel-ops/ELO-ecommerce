@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel do Vendedor - ELO Commerce</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f9fafb;
+        color: #222;
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        background-color: #004aad;
+        color: white;
+        padding: 15px;
+        text-align: center;
+      }
+      .content {
+        max-width: 800px;
+        margin: 30px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      button {
+        background-color: #d9534f;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #c9302c;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h2>👤 Painel do Vendedor</h2>
+    </header>
+
+    <div class="content">
+      <p id="userInfo">Carregando informações do vendedor...</p>
+      <button id="logoutBtn">Sair</button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+      import { getAuth, onAuthStateChanged, signOut } 
+        from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+        authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+        projectId: "elo-ecommerce-ecd87",
+        storageBucket: "elo-ecommerce-ecd87.firebasestorage.app",
+        messagingSenderId: "375574231770",
+        appId: "1:375574231770:web:78279cb6aac72c454703e3"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      // Verifica se há usuário logado
+      onAuthStateChanged(auth, (user) => {
+        const userInfo = document.getElementById("userInfo");
+        if (user) {
+          userInfo.textContent = `Bem-vindo, ${user.email}`;
+        } else {
+          alert("Você precisa fazer login primeiro.");
+          window.location.href = "login.html";
+        }
+      });
+
+      // Logout
+      document.getElementById("logoutBtn").addEventListener("click", async () => {
+        await signOut(auth);
+        alert("Você saiu da sua conta.");
+        window.location.href = "login.html";
+      });
+    </script>
+  </body>
+  </html>
