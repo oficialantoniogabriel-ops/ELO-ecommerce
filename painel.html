@@ -5,7 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Painel do Vendedor - ELO Commerce</title>
     <style>
-      body {
+     <!-- Listar produtos do Firestore -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, collection, query, where, getDocs } 
+    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.firebasestorage.app",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  const contentDiv = document.querySelector(".content");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const produtosRef = collection(db, "produtos");
+      const q = query(produtosRef, where("vendedor", "==", user.email));
+      const querySnapshot = await getDocs(q);
+
+      let html = `<h3>Seus Produtos:</h3>`;
+      if (querySnapshot.empty) {
+        html += `<p>Você ainda não tem produtos cadastrados.</p>`;
+      } else {
+        querySnapshot.forEach((doc) => {
+          const p = doc.data();
+          html += `
+            <div style="border:1px solid #ccc; padding:10px; margin:10px; border-radius:8px;">
+              <img src="${p.imagem}" alt="${p.nome}" width="100"><br>
+              <strong>${p.nome}</strong><br>
+              ${p.descricao}<br>
+              <b>${p.preco} AOA</b>
+            </div>`;
+        });
+      }
+      contentDiv.innerHTML += html;
+    } else {
+      alert("Você precisa fazer login primeiro.");
+      window.location.href = "login.html";
+    }
+  });
+</script> body {
         font-family: "Poppins", sans-serif;
         background-color: #f9fafb;
         color: #222;
