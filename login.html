@@ -5,7 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - ELO Commerce</title>
     <style>
-      body {
+     <!-- Firebase SDK -->
+<script type="module">
+  // Importa as funções principais
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
+    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+  // 🔑 Configuração do seu Firebase (substitua pelos seus dados)
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.firebasestorage.app",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
+
+  // Inicializa o app Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // 🔹 Funções de login e registro
+  document.getElementById("loginBtn").addEventListener("click", async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert("Login realizado com sucesso!");
+      window.location.href = "painel.html"; // redireciona para o painel
+    } catch (error) {
+      alert("Erro no login: " + error.message);
+    }
+  });
+
+  document.getElementById("registerBtn").addEventListener("click", async () => {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("Cadastro realizado com sucesso!");
+      window.location.href = "painel.html";
+    } catch (error) {
+      alert("Erro no cadastro: " + error.message);
+    }
+  });
+</script> body {
         font-family: "Poppins", sans-serif;
         background-color: #f3f4f6;
         display: flex;
