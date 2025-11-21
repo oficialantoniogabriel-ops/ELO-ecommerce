@@ -1,139 +1,179 @@
 <!DOCTYPE html>
 <html lang="pt">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Painel do Vendedor - ELO Commerce</title>
-    <style>
-     <!-- Listar produtos do Firestore -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, collection, query, where, getDocs } 
-    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-    projectId: "elo-ecommerce-ecd87",
-    storageBucket: "elo-ecommerce-ecd87.firebasestorage.app",
-    messagingSenderId: "375574231770",
-    appId: "1:375574231770:web:78279cb6aac72c454703e3"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
-
-  const contentDiv = document.querySelector(".content");
-
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const produtosRef = collection(db, "produtos");
-      const q = query(produtosRef, where("vendedor", "==", user.email));
-      const querySnapshot = await getDocs(q);
-
-      let html = `<h3>Seus Produtos:</h3>`;
-      if (querySnapshot.empty) {
-        html += `<p>Você ainda não tem produtos cadastrados.</p>`;
-      } else {
-        querySnapshot.forEach((doc) => {
-          const p = doc.data();
-          html += `
-            <div style="border:1px solid #ccc; padding:10px; margin:10px; border-radius:8px;">
-              <img src="${p.imagem}" alt="${p.nome}" width="100"><br>
-              <strong>${p.nome}</strong><br>
-              ${p.descricao}<br>
-              <b>${p.preco} AOA</b>
-            </div>`;
-        });
-      }
-      contentDiv.innerHTML += html;
-    } else {
-      alert("Você precisa fazer login primeiro.");
-      window.location.href = "login.html";
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Vendedor - ELO Commerce</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
     }
-  });
-</script> body {
-        font-family: "Poppins", sans-serif;
-        background-color: #f9fafb;
-        color: #222;
-        margin: 0;
-        padding: 0;
-      }
-      header {
-        background-color: #004aad;
-        color: white;
-        padding: 15px;
-        text-align: center;
-      }
-      .content {
-        max-width: 800px;
-        margin: 30px auto;
-        padding: 20px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      }
-      button {
-        background-color: #d9534f;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 6px;
-        cursor: pointer;
-      }
-      button:hover {
-        background-color: #c9302c;
-      }
-    </style>
-  </head>
+    header {
+      background-color: #004aad;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #004aad;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background-color: #004aad;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #003580;
+    }
+    .produto {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .produto img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
 
-  <body>
-    <header>
-      <h2>👤 Painel do Vendedor</h2>
-    </header>
+  <header>
+    <h1>👤 Painel do Vendedor</h1>
+    <p id="userEmail">Carregando...</p>
+    <button id="logoutBtn">Sair</button>
+  </header>
 
-    <div class="content">
-      <p id="userInfo">Carregando informações do vendedor...</p>
-      <button id="logoutBtn">Sair</button>
-    </div>
+  <div class="container">
+    <h2>Adicionar Novo Produto</h2>
+    <input type="text" id="nome" placeholder="Nome do produto" required />
+    <input type="number" id="preco" placeholder="Preço em AOA" required />
+    <textarea id="descricao" placeholder="Descrição do produto" required></textarea>
+    <input type="text" id="imagem" placeholder="URL da imagem do produto" required />
+    <button id="addProdutoBtn">Cadastrar Produto</button>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-      import { getAuth, onAuthStateChanged, signOut } 
-        from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    <hr>
+    <h2>Seus Produtos</h2>
+    <div id="listaProdutos">Carregando produtos...</div>
+  </div>
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-        authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-        projectId: "elo-ecommerce-ecd87",
-        storageBucket: "elo-ecommerce-ecd87.firebasestorage.app",
-        messagingSenderId: "375574231770",
-        appId: "1:375574231770:web:78279cb6aac72c454703e3"
-      };
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs } 
+      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-      const app = initializeApp(firebaseConfig);
-      const auth = getAuth(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+      authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+      projectId: "elo-ecommerce-ecd87",
+      storageBucket: "elo-ecommerce-ecd87.firebasestorage.app",
+      messagingSenderId: "375574231770",
+      appId: "1:375574231770:web:78279cb6aac72c454703e3"
+    };
 
-      // Verifica se há usuário logado
-      onAuthStateChanged(auth, (user) => {
-        const userInfo = document.getElementById("userInfo");
-        if (user) {
-          userInfo.textContent = `Bem-vindo, ${user.email}`;
-        } else {
-          alert("Você precisa fazer login primeiro.");
-          window.location.href = "login.html";
-        }
-      });
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-      // Logout
-      document.getElementById("logoutBtn").addEventListener("click", async () => {
-        await signOut(auth);
-        alert("Você saiu da sua conta.");
+    const userEmail = document.getElementById("userEmail");
+    const listaProdutos = document.getElementById("listaProdutos");
+    const addProdutoBtn = document.getElementById("addProdutoBtn");
+
+    let vendedorEmail = "";
+
+    // 🔹 Verifica login
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        vendedorEmail = user.email;
+        userEmail.textContent = "Bem-vindo, " + vendedorEmail;
+        carregarProdutos();
+      } else {
         window.location.href = "login.html";
+      }
+    });
+
+    // 🔹 Logout
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+
+    // 🔹 Cadastrar novo produto
+    addProdutoBtn.addEventListener("click", async () => {
+      const nome = document.getElementById("nome").value;
+      const preco = parseFloat(document.getElementById("preco").value);
+      const descricao = document.getElementById("descricao").value;
+      const imagem = document.getElementById("imagem").value;
+
+      if (!nome || !preco || !descricao || !imagem) {
+        alert("Preencha todos os campos!");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "produtos"), {
+          nome,
+          preco,
+          descricao,
+          imagem,
+          vendedor: vendedorEmail
+        });
+        alert("Produto cadastrado com sucesso!");
+        carregarProdutos();
+      } catch (error) {
+        alert("Erro ao cadastrar produto: " + error.message);
+      }
+    });
+
+    // 🔹 Carregar produtos do vendedor
+    async function carregarProdutos() {
+      listaProdutos.innerHTML = "Carregando...";
+      const q = query(collection(db, "produtos"), where("vendedor", "==", vendedorEmail));
+      const querySnapshot = await getDocs(q);
+      let html = "";
+      querySnapshot.forEach((doc) => {
+        const p = doc.data();
+        html += `
+          <div class="produto">
+            <img src="${p.imagem}" alt="${p.nome}">
+            <div>
+              <b>${p.nome}</b><br>
+              ${p.descricao}<br>
+              <b>${p.preco.toLocaleString()} AOA</b>
+            </div>
+          </div>`;
       });
-    </script>
-  </body>
+      listaProdutos.innerHTML = html || "<p>Você ainda não tem produtos.</p>";
+    }
+  </script>
+</body>
   </html>
