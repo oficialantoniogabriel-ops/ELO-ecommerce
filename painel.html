@@ -1,179 +1,279 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-AO">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel do Vendedor - ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      font-family: "Poppins", sans-serif;
-      background-color: #f4f6f8;
-      margin: 0;
-      padding: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
     }
-    header {
-      background-color: #004aad;
-      color: white;
-      padding: 15px;
-      text-align: center;
+    .navbar {
+      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
     }
-    .container {
-      max-width: 900px;
-      margin: 30px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    .navbar-brand {
+      color: #fff !important;
+      font-weight: 700;
     }
-    h2 {
-      color: #004aad;
+    .sidebar {
+      background-color: #111;
+      height: 100vh;
+      position: fixed;
+      width: 220px;
+      padding-top: 60px;
+      border-right: 1px solid #222;
     }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 6px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+    .sidebar a {
+      display: block;
+      color: #ffcc00;
+      padding: 12px 20px;
+      text-decoration: none;
+      transition: 0.3s;
     }
-    button {
-      background-color: #004aad;
-      color: white;
+    .sidebar a:hover {
+      background-color: #b8860b;
+      color: #000;
+    }
+    .content {
+      margin-left: 220px;
+      padding: 40px 30px;
+    }
+    .btn-gold {
+      background-color: #b8860b;
+      color: #fff;
       border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
+      border-radius: 25px;
+      padding: 10px 24px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .btn-gold:hover {
+      background-color: #ffcc00;
+      color: #000;
+      transform: scale(1.05);
+    }
+    .upload-area {
+      background-color: #111;
+      border: 2px dashed #b8860b;
+      border-radius: 10px;
+      padding: 40px;
+      text-align: center;
       cursor: pointer;
-      margin-top: 10px;
+      transition: 0.3s;
     }
-    button:hover {
-      background-color: #003580;
+    .upload-area:hover {
+      background-color: #1a1a1a;
     }
-    .produto {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 10px;
-      margin: 10px 0;
-      display: flex;
-      align-items: center;
-      gap: 15px;
+    .card {
+      background-color: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      transition: all 0.3s;
     }
-    .produto img {
-      width: 80px;
-      height: 80px;
-      object-fit: cover;
-      border-radius: 8px;
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(255,215,0,0.2);
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>👤 Painel do Vendedor</h1>
-    <p id="userEmail">Carregando...</p>
-    <button id="logoutBtn">Sair</button>
-  </header>
-
-  <div class="container">
-    <h2>Adicionar Novo Produto</h2>
-    <input type="text" id="nome" placeholder="Nome do produto" required />
-    <input type="number" id="preco" placeholder="Preço em AOA" required />
-    <textarea id="descricao" placeholder="Descrição do produto" required></textarea>
-    <input type="text" id="imagem" placeholder="URL da imagem do produto" required />
-    <button id="addProdutoBtn">Cadastrar Produto</button>
-
-    <hr>
-    <h2>Seus Produtos</h2>
-    <div id="listaProdutos">Carregando produtos...</div>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="index.html">⚜️ ELO Commerce</a>
+    <div class="ms-auto d-flex align-items-center gap-3">
+      <p class="m-0">Saldo: <strong id="saldo">Carregando...</strong></p>
+      <button class="btn btn-gold" id="sacarBtn">💰 Sacar Saldo</button>
+      <button class="btn btn-outline-light" id="logoutBtn">Sair</button>
+    </div>
   </div>
+</nav>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, getDocs } 
-      from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+<!-- Sidebar -->
+<div class="sidebar">
+  <a href="painel.html">🏠 Painel</a>
+  <a href="carteira.html">💰 Carteira</a>
+  <a href="afiliados.html">🤝 Afiliados</a>
+  <a href="#">⚙️ Configurações</a>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-      authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-      projectId: "elo-ecommerce-ecd87",
-      storageBucket: "elo-ecommerce-ecd87.firebasestorage.app",
-      messagingSenderId: "375574231770",
-      appId: "1:375574231770:web:78279cb6aac72c454703e3"
-    };
+<!-- Conteúdo -->
+<div class="content">
+  <h2 class="text-warning mb-4">Gerenciar Produtos</h2>
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
+  <!-- Formulário de Produto -->
+  <form id="productForm" class="mb-5">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <input type="text" class="form-control" id="productName" placeholder="Nome do Produto" required>
+      </div>
+      <div class="col-md-3">
+        <input type="number" class="form-control" id="productPrice" placeholder="Preço (AOA)" required>
+      </div>
+      <div class="col-md-3">
+        <button type="submit" class="btn btn-gold w-100">Publicar Produto</button>
+      </div>
+      <div class="col-12">
+        <textarea class="form-control mt-3" id="productDescription" rows="3" placeholder="Descrição do Produto"></textarea>
+      </div>
+      <div class="col-12 mt-3">
+        <input type="file" id="productImages" accept="image/*" multiple>
+        <p class="small text-muted mt-2">Selecione até 2 imagens por produto</p>
+      </div>
+    </div>
+  </form>
 
-    const userEmail = document.getElementById("userEmail");
-    const listaProdutos = document.getElementById("listaProdutos");
-    const addProdutoBtn = document.getElementById("addProdutoBtn");
+  <!-- Galeria de Imagens Preview -->
+  <div class="row mb-5" id="previewContainer"></div>
 
-    let vendedorEmail = "";
+  <!-- Listagem de Produtos -->
+  <h3 class="text-warning mb-3">Seus Produtos</h3>
+  <div class="row" id="productList">Carregando...</div>
+</div>
 
-    // 🔹 Verifica login
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        vendedorEmail = user.email;
-        userEmail.textContent = "Bem-vindo, " + vendedorEmail;
-        carregarProdutos();
-      } else {
-        window.location.href = "login.html";
-      }
-    });
+<footer class="text-center mt-5 py-3 bg-black text-secondary">
+  &copy; 2025 ELO Commerce. Todos os direitos reservados.
+</footer>
 
-    // 🔹 Logout
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      await signOut(auth);
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, query, where, getDocs } 
+    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } 
+    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
+
+  // 🚀 Configuração Firebase CORRIGIDA
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.appspot.com",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+  const auth = getAuth(app);
+
+  const saldoEl = document.getElementById("saldo");
+  const productList = document.getElementById("productList");
+  const previewContainer = document.getElementById("previewContainer");
+
+  // Verificar login
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
       window.location.href = "login.html";
-    });
-
-    // 🔹 Cadastrar novo produto
-    addProdutoBtn.addEventListener("click", async () => {
-      const nome = document.getElementById("nome").value;
-      const preco = parseFloat(document.getElementById("preco").value);
-      const descricao = document.getElementById("descricao").value;
-      const imagem = document.getElementById("imagem").value;
-
-      if (!nome || !preco || !descricao || !imagem) {
-        alert("Preencha todos os campos!");
-        return;
-      }
-
-      try {
-        await addDoc(collection(db, "produtos"), {
-          nome,
-          preco,
-          descricao,
-          imagem,
-          vendedor: vendedorEmail
-        });
-        alert("Produto cadastrado com sucesso!");
-        carregarProdutos();
-      } catch (error) {
-        alert("Erro ao cadastrar produto: " + error.message);
-      }
-    });
-
-    // 🔹 Carregar produtos do vendedor
-    async function carregarProdutos() {
-      listaProdutos.innerHTML = "Carregando...";
-      const q = query(collection(db, "produtos"), where("vendedor", "==", vendedorEmail));
-      const querySnapshot = await getDocs(q);
-      let html = "";
-      querySnapshot.forEach((doc) => {
-        const p = doc.data();
-        html += `
-          <div class="produto">
-            <img src="${p.imagem}" alt="${p.nome}">
-            <div>
-              <b>${p.nome}</b><br>
-              ${p.descricao}<br>
-              <b>${p.preco.toLocaleString()} AOA</b>
-            </div>
-          </div>`;
-      });
-      listaProdutos.innerHTML = html || "<p>Você ainda não tem produtos.</p>";
+      return;
     }
-  </script>
+    const email = user.email;
+    await carregarSaldo(email);
+    await carregarProdutos(email);
+  });
+
+  // Logout
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "login.html";
+  });
+
+  // Carregar saldo
+  async function carregarSaldo(email) {
+    const carteiraRef = doc(db, "carteira", email);
+    const snap = await getDoc(carteiraRef);
+    const saldo = snap.exists() ? snap.data().saldo : 0;
+    saldoEl.textContent = saldo.toLocaleString() + " AOA";
+  }
+
+  // Upload de imagens e cadastro
+  document.getElementById("productForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (!user) return alert("Faça login novamente.");
+    const email = user.email;
+    const files = document.getElementById("productImages").files;
+    if (files.length === 0) return alert("Selecione pelo menos 1 imagem.");
+
+    const urls = [];
+    for (let i = 0; i < Math.min(files.length, 2); i++) {
+      const file = files[i];
+      const fileRef = ref(storage, `uploads/${email}/${file.name}`);
+      await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(fileRef);
+      urls.push(url);
+    }
+
+    await addDoc(collection(db, "produtos"), {
+      nome: document.getElementById("productName").value,
+      descricao: document.getElementById("productDescription").value,
+      preco: parseFloat(document.getElementById("productPrice").value),
+      imagens: urls,
+      vendedor: email,
+      criadoEm: new Date()
+    });
+
+    // Débito automático
+    const carteiraRef = doc(db, "carteira", email);
+    const snap = await getDoc(carteiraRef);
+    const saldoAtual = snap.exists() ? snap.data().saldo : 0;
+    await setDoc(carteiraRef, { saldo: saldoAtual - 100 }, { merge: true });
+
+    alert("Produto publicado com sucesso! (-100 AOA debitado)");
+    carregarSaldo(email);
+    carregarProdutos(email);
+  });
+
+  // Listar produtos do vendedor
+  async function carregarProdutos(email) {
+    productList.innerHTML = "Carregando...";
+    const q = query(collection(db, "produtos"), where("vendedor", "==", email));
+    const snap = await getDocs(q);
+    let html = "";
+    snap.forEach(docSnap => {
+      const p = docSnap.data();
+      const imgs = (p.imagens || []).map(url => `<img src="${url}" class="img-fluid rounded mb-2" style="max-height:120px">`).join("");
+      html += `
+        <div class="col-md-4 mb-4">
+          <div class="card p-3">
+            ${imgs}
+            <h5>${p.nome}</h5>
+            <p>${p.descricao}</p>
+            <strong>${p.preco.toLocaleString()} AOA</strong>
+          </div>
+        </div>`;
+    });
+    productList.innerHTML = html || "<p>Nenhum produto encontrado.</p>";
+  }
+
+  // Saque
+  document.getElementById("sacarBtn").addEventListener("click", async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+    const email = user.email;
+    const carteiraRef = doc(db, "carteira", email);
+    const snap = await getDoc(carteiraRef);
+    const saldo = snap.exists() ? snap.data().saldo : 0;
+
+    if (saldo <= 0) return alert("Saldo insuficiente.");
+
+    await addDoc(collection(db, "saques"), {
+      vendedor: email,
+      valor: saldo,
+      status: "pendente",
+      criadoEm: new Date()
+    });
+    await updateDoc(carteiraRef, { saldo: 0 });
+    alert("Pedido de saque enviado!");
+    carregarSaldo(email);
+  });
+</script>
+
 </body>
-  </html>
+</html>
