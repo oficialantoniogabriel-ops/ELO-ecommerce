@@ -4,26 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ELO Commerce - Conectando Empreendedores Africanos</title>
-  <meta name="description" content="ELO Commerce conecta empreendedores africanos ao mercado global. Crie sua loja online, venda produtos e cresça com nossa rede de afiliados.">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Schema JSON-LD (SEO Avançado) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "ELO Commerce",
-    "url": "https://oficialantoniogabriel-ops.github.io/ELO-ecommerce/",
-    "logo": "https://oficialantoniogabriel-ops.github.io/ELO-ecommerce/assets/logo.png",
-    "description": "ELO Commerce conecta empreendedores africanos e compradores globais.",
-    "founder": {
-      "@type": "Person",
-      "name": "António Mayandjo Jamba Ndala"
-    },
-    "address": { "@type": "PostalAddress", "addressCountry": "AO" }
-  }
-  </script>
-
   <style>
     body {
       background-color: #000;
@@ -56,10 +37,6 @@
     .hero h1 {
       font-size: 2.5rem;
       font-weight: 700;
-    }
-    .hero p {
-      font-size: 1.2rem;
-      margin: 20px 0 40px;
     }
     .btn-gold {
       background-color: #b8860b;
@@ -119,21 +96,20 @@
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="nav">
       <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="#inicio">Início</a></li>
         <li class="nav-item"><a class="nav-link" href="#produtos">Produtos</a></li>
         <li class="nav-item"><a class="nav-link" href="planos.html">Planos</a></li>
         <li class="nav-item"><a class="nav-link" href="afiliados.html">Afiliados</a></li>
         <li class="nav-item"><a class="nav-link" href="painel.html">Painel</a></li>
         <li class="nav-item"><a class="nav-link" href="carteira.html">Carteira</a></li>
         <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-        <li class="nav-item"><a class="nav-link btn btn-gold ms-2" href="cadastro.html">Cadastrar</a></li>
+        <li class="nav-item"><a class="btn btn-gold ms-2" href="cadastro.html">Cadastrar</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
-<!-- Hero Section -->
-<section id="inicio" class="hero">
+<!-- Hero -->
+<section class="hero">
   <div class="container">
     <h1>Conectando empreendedores africanos ao mercado global</h1>
     <p>Crie, venda e cresça com o ELO Commerce — a plataforma feita para o sucesso digital africano.</p>
@@ -146,49 +122,36 @@
   <div class="container text-center">
     <h2>Produtos em Destaque</h2>
     <div class="row" id="product-list">
+
+      <!-- Produto 1 -->
       <div class="col-md-4 mb-4">
         <div class="card">
-          <img src="https://via.placeholder.com/400x200" alt="Produto 1">
+          <!-- imagem local -->
+          <img src="imagens/produto1.jpg" alt="Produto 1">
           <div class="card-body">
-            <h5 class="card-title">Produto 1</h5>
-            <p class="card-text">Descrição breve do produto 1.</p>
+            <h5 class="card-title">Produto Local</h5>
+            <p class="card-text">Imagem carregada diretamente da pasta /imagens.</p>
             <p><strong>10.000 AOA</strong></p>
             <a href="login.html" class="btn-gold btn-sm">Comprar</a>
           </div>
         </div>
       </div>
+
+      <!-- Produto 2 -->
       <div class="col-md-4 mb-4">
         <div class="card">
-          <img src="https://via.placeholder.com/400x200" alt="Produto 2">
+          <!-- imagem externa -->
+          <img src="https://via.placeholder.com/400x200?text=Produto+Externo" alt="Produto 2">
           <div class="card-body">
-            <h5 class="card-title">Produto 2</h5>
-            <p class="card-text">Descrição breve do produto 2.</p>
+            <h5 class="card-title">Produto Externo</h5>
+            <p class="card-text">Imagem hospedada externamente.</p>
             <p><strong>12.500 AOA</strong></p>
             <a href="login.html" class="btn-gold btn-sm">Comprar</a>
           </div>
         </div>
       </div>
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <img src="https://via.placeholder.com/400x200" alt="Produto 3">
-          <div class="card-body">
-            <h5 class="card-title">Produto 3</h5>
-            <p class="card-text">Descrição breve do produto 3.</p>
-            <p><strong>8.000 AOA</strong></p>
-            <a href="login.html" class="btn-gold btn-sm">Comprar</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- Afiliados -->
-<section class="section bg-dark text-center">
-  <div class="container">
-    <h2>Programa de Afiliados</h2>
-    <p class="mb-4">Ganhe comissões promovendo produtos africanos e ajudando empreendedores a crescer.</p>
-    <a href="afiliados.html" class="btn-gold">Seja um Afiliado</a>
+    </div>
   </div>
 </section>
 
@@ -197,42 +160,6 @@
   &copy; 2025 ELO Commerce. Todos os direitos reservados.
 </footer>
 
-<!-- Firebase e rastreamento de afiliados -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-    projectId: "elo-ecommerce-ecd87",
-    storageBucket: "elo-ecommerce-ecd87.appspot.com",
-    messagingSenderId: "375574231770",
-    appId: "1:375574231770:web:78279cb6aac72c454703e3"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // Detectar link de afiliado ?ref=
-  (async () => {
-    const params = new URLSearchParams(window.location.search);
-    const ref = params.get("ref");
-    if (ref) {
-      try {
-        await addDoc(collection(db, "referencias"), {
-          emailAfiliado: ref,
-          url: window.location.href,
-          data: new Date()
-        });
-        console.log("✅ Clique de afiliado registrado:", ref);
-      } catch (error) {
-        console.error("Erro ao registrar afiliado:", error);
-      }
-    }
-  })();
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-  </html>
+</html>
