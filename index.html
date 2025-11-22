@@ -5,97 +5,179 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ELO Commerce - Conectando Empreendedores Africanos</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=AOA"></script>
   <style>
-    body {font-family: Arial, sans-serif;}
-    .hero {background:#f8f9fa;padding:60px 0;text-align:center;}
-    .section {padding:60px 15px;}
-    .card img {max-height:200px; object-fit:cover;}
+    body {
+      background-color: #000;
+      color: #f5f5f5;
+      font-family: "Poppins", sans-serif;
+      scroll-behavior: smooth;
+    }
+    nav.navbar {
+      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
+    }
+    .navbar-brand {
+      color: #fff !important;
+      font-weight: bold;
+      font-size: 1.3rem;
+    }
+    .navbar-nav .nav-link {
+      color: #f5f5f5 !important;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .navbar-nav .nav-link:hover {
+      color: #ffcc00 !important;
+    }
+    .hero {
+      background: linear-gradient(135deg, #b8860b, #000);
+      padding: 120px 0;
+      color: #fff;
+      text-align: center;
+    }
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin: 20px 0 40px;
+    }
+    .btn-gold {
+      background-color: #b8860b;
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    .btn-gold:hover {
+      background-color: #ffcc00;
+      color: #000;
+      transform: scale(1.05);
+    }
+    .section {
+      padding: 80px 0;
+    }
+    .section h2 {
+      color: #ffcc00;
+      font-weight: 700;
+      margin-bottom: 40px;
+    }
+    .card {
+      background-color: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      color: #fff;
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2);
+    }
+    .card img {
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      height: 200px;
+      object-fit: cover;
+    }
+    footer {
+      background: #000;
+      color: #aaa;
+      padding: 20px 0;
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
   <div class="container">
-    <a class="navbar-brand" href="index.html">ELO Commerce</a>
-    <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
-    <div class="collapse navbar-collapse" id="nav">
-      <ul class="navbar-nav ms-auto">
+    <a class="navbar-brand" href="index.html">⚜️ ELO Commerce</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="nav">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
         <li class="nav-item"><a class="nav-link" href="#produtos">Produtos</a></li>
         <li class="nav-item"><a class="nav-link" href="planos.html">Planos</a></li>
-        <li class="nav-item"><a class="nav-link" href="fundador.html">Fundador</a></li>
-        <li class="nav-item"><a class="nav-link" href="funil.html">Cadastre-se</a></li>
+        <li class="nav-item"><a class="nav-link" href="afiliados.html">Afiliados</a></li>
+        <li class="nav-item"><a class="nav-link" href="painel.html">Painel</a></li>
+        <li class="nav-item"><a class="nav-link" href="carteira.html">Carteira</a></li>
+        <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+        <li class="nav-item"><a class="nav-link btn btn-gold ms-2" href="cadastro.html">Cadastrar</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
+<!-- Hero Section -->
 <section class="hero">
   <div class="container">
-    <h1>Conectando empreendedores africanos e compradores do mundo todo</h1>
-    <p>Crie sua loja digital e venda produtos físicos e digitais com facilidade.</p>
-    <a href="funil.html" class="btn btn-primary btn-lg">Comece Grátis</a>
+    <h1>Conectando empreendedores africanos ao mercado global</h1>
+    <p>Crie, venda e cresça com o ELO Commerce — a plataforma feita para o sucesso digital africano.</p>
+    <a href="planos.html" class="btn-gold">Ver Planos</a>
   </div>
 </section>
 
+<!-- Produtos -->
 <section id="produtos" class="section">
-  <div class="container">
-    <h2 class="text-center mb-4">Produtos em Destaque</h2>
-    <div class="row" id="product-list"></div>
-  </div>
-</section>
-
-<section class="section bg-light">
   <div class="container text-center">
-    <h2>Por que escolher o ELO Commerce?</h2>
-    <div class="row mt-4">
-      <div class="col-md-4"><h5>Para Compradores</h5><p>Produtos africanos de qualidade, pagamentos seguros e entrega confiável.</p></div>
-      <div class="col-md-4"><h5>Para Vendedores</h5><p>Loja pronta para vender, exposição global e suporte técnico.</p></div>
-      <div class="col-md-4"><h5>Impacto Social</h5><p>Fortalecendo o empreendedorismo digital na África.</p></div>
+    <h2>Produtos em Destaque</h2>
+    <div class="row" id="product-list">
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="https://via.placeholder.com/400x200" alt="Produto 1">
+          <div class="card-body">
+            <h5 class="card-title">Produto 1</h5>
+            <p class="card-text">Descrição breve do produto 1.</p>
+            <p><strong>10.000 AOA</strong></p>
+            <a href="login.html" class="btn-gold btn-sm">Comprar</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="https://via.placeholder.com/400x200" alt="Produto 2">
+          <div class="card-body">
+            <h5 class="card-title">Produto 2</h5>
+            <p class="card-text">Descrição breve do produto 2.</p>
+            <p><strong>12.500 AOA</strong></p>
+            <a href="login.html" class="btn-gold btn-sm">Comprar</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <img src="https://via.placeholder.com/400x200" alt="Produto 3">
+          <div class="card-body">
+            <h5 class="card-title">Produto 3</h5>
+            <p class="card-text">Descrição breve do produto 3.</p>
+            <p><strong>8.000 AOA</strong></p>
+            <a href="login.html" class="btn-gold btn-sm">Comprar</a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<footer class="bg-dark text-white text-center py-3">
+<!-- Afiliados -->
+<section class="section bg-dark text-center">
+  <div class="container">
+    <h2>Programa de Afiliados</h2>
+    <p class="mb-4">Ganhe comissões promovendo produtos africanos e ajudando empreendedores a crescer.</p>
+    <a href="afiliados.html" class="btn-gold">Seja um Afiliado</a>
+  </div>
+</section>
+
+<!-- Rodapé -->
+<footer class="text-center">
   &copy; 2025 ELO Commerce. Todos os direitos reservados.
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  const productList = document.getElementById('product-list');
-  db.collection('produtos').where('ativo','==',true).get().then(snap=>{
-    snap.forEach(doc=>{
-      const p=doc.data();
-      const card=document.createElement('div');
-      card.className='col-md-4 mb-3';
-      card.innerHTML=`
-        <div class="card h-100">
-          <img src="${p.imagem}" class="card-img-top" alt="${p.nome}">
-          <div class="card-body">
-            <h5>${p.nome}</h5><p>${p.descricao}</p>
-            <p><strong>${p.preco} AOA</strong></p>
-            <div id="paypal-${doc.id}"></div>
-          </div>
-        </div>`;
-      productList.appendChild(card);
-      paypal.Buttons({
-        createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{value:p.preco}}]}),
-        onApprove:(d,a)=>a.order.capture().then(det=>alert('Pagamento concluído: '+det.payer.name.given_name))
-      }).render('#paypal-'+doc.id);
-    });
-  });
-</script>
 </body>
-        </html>
+      </html>
