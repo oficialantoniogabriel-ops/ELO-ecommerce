@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações - ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #000;
+      color: #f5f5f5;
+      font-family: "Poppins", sans-serif;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
+    }
+    .navbar-brand {
+      color: #fff !important;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 700px;
+      margin-top: 100px;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+    }
+    .btn-gold {
+      background-color: #b8860b;
+      color: #fff;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 24px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .btn-gold:hover {
+      background-color: #ffcc00;
+      color: #000;
+      transform: scale(1.05);
+    }
+    .form-control, input[type="file"] {
+      background-color: #222;
+      color: #fff;
+      border: 1px solid #333;
+    }
+    .form-control:focus {
+      border-color: #b8860b;
+      box-shadow: none;
+      background-color: #1a1a1a;
+      color: #fff;
+    }
+    .profile-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #b8860b;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="painel.html">⚙️ Configurações</a>
+    <button class="btn btn-outline-light ms-auto" id="logoutBtn">Sair</button>
+  </div>
+</nav>
+
+<!-- Conteúdo -->
+<div class="container">
+  <h2 class="text-warning text-center mb-4">Editar Perfil</h2>
+
+  <div class="text-center mb-4">
+    <img id="fotoPerfil" src="https://via.placeholder.com/120" class="profile-img" alt="Foto de Perfil">
+    <div class="mt-3">
+      <input type="file" id="novaFoto" accept="image/*">
+    </div>
+  </div>
+
+  <form id="configForm">
+    <div class="mb-3">
+      <label for="nome" class="form-label">Nome</label>
+      <input type="text" class="form-control" id="nome" required>
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" required>
+    </div>
+    <div class="mb-3">
+      <label for="senha" class="form-label">Nova Senha</label>
+      <input type="password" class="form-control" id="senha" placeholder="Deixe em branco se não quiser mudar">
+    </div>
+    <button type="submit" class="btn-gold w-100 mt-3">Salvar Alterações</button>
+  </form>
+</div>
+
+<footer class="text-center mt-5 py-3 bg-black text-secondary">
+  &copy; 2025 ELO Commerce. Todos os direitos reservados.
+</footer>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, updateEmail, updatePassword, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.appspot.com",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  const form = document.getElementById("configForm");
+  const fotoPerfil = document.getElementById("fotoPerfil");
+  const novaFoto = document.getElementById("novaFoto");
+
+  let userEmail = "";
+
+  // Verifica login
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+    userEmail = user.email;
+
+    const docRef = doc(db, "usuarios", userEmail);
+    const snap = await getDoc(docRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      document.getElementById("nome").value = data.nome || "";
+      document.getElementById("email").value = user.email;
+      fotoPerfil.src = data.foto || "https://via.placeholder.com/120";
+    }
+  });
+
+  // Logout
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "login.html";
+  });
+
+  // Salvar alterações
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (!user) return alert("Faça login novamente.");
+
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+
+    try {
+      // Atualiza email e senha
+      if (email !== user.email) await updateEmail(user, email);
+      if (senha) await updatePassword(user, senha);
+
+      let fotoURL = fotoPerfil.src;
+
+      // Se enviou nova foto
+      if (novaFoto.files.length > 0) {
+        const file = novaFoto.files[0];
+        const fileRef = ref(storage, "usuarios/" + user.uid + ".jpg");
+        await uploadBytes(fileRef, file);
+        fotoURL = await getDownloadURL(fileRef);
+      }
+
+      // Salva no Firestore
+      await setDoc(doc(db, "usuarios", email), {
+        nome,
+        email,
+        foto: fotoURL,
+        atualizadoEm: new Date()
+      });
+
+      alert("Alterações salvas com sucesso!");
+      window.location.reload();
+    } catch (err) {
+      alert("Erro ao atualizar: " + err.message);
+    }
+  });
+</script>
+
+</body>
+        </html>
