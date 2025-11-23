@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ELO Commerce - Conectando Empreendedores Africanos</title>
+  <title>⚜️ ELO Commerce - Conectando Empreendedores Africanos</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
       background-color: #000;
       color: #f5f5f5;
       font-family: "Poppins", sans-serif;
-      scroll-behavior: smooth;
     }
     nav.navbar {
       background: linear-gradient(90deg, #b8860b 0%, #000 100%);
@@ -38,6 +37,10 @@
       font-size: 2.5rem;
       font-weight: 700;
     }
+    .hero p {
+      font-size: 1.1rem;
+      margin: 20px 0 40px;
+    }
     .btn-gold {
       background-color: #b8860b;
       color: #fff;
@@ -51,14 +54,6 @@
       background-color: #ffcc00;
       color: #000;
       transform: scale(1.05);
-    }
-    .section {
-      padding: 80px 0;
-    }
-    .section h2 {
-      color: #ffcc00;
-      font-weight: 700;
-      margin-bottom: 40px;
     }
     .card {
       background-color: #111;
@@ -76,6 +71,7 @@
       border-top-right-radius: 12px;
       height: 200px;
       object-fit: cover;
+      width: 100%;
     }
     footer {
       background: #000;
@@ -99,10 +95,8 @@
         <li class="nav-item"><a class="nav-link" href="#produtos">Produtos</a></li>
         <li class="nav-item"><a class="nav-link" href="planos.html">Planos</a></li>
         <li class="nav-item"><a class="nav-link" href="afiliados.html">Afiliados</a></li>
-        <li class="nav-item"><a class="nav-link" href="painel.html">Painel</a></li>
-        <li class="nav-item"><a class="nav-link" href="carteira.html">Carteira</a></li>
         <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-        <li class="nav-item"><a class="btn btn-gold ms-2" href="cadastro.html">Cadastrar</a></li>
+        <li class="nav-item"><a class="nav-link btn btn-gold ms-2" href="cadastro.html">Cadastrar</a></li>
       </ul>
     </div>
   </div>
@@ -112,54 +106,79 @@
 <section class="hero">
   <div class="container">
     <h1>Conectando empreendedores africanos ao mercado global</h1>
-    <p>Crie, venda e cresça com o ELO Commerce — a plataforma feita para o sucesso digital africano.</p>
-    <a href="planos.html" class="btn-gold">Ver Planos</a>
+    <p>Venda seus produtos, inspire sua comunidade e cresça com o ELO Commerce.</p>
+    <a href="#produtos" class="btn-gold">Explorar Produtos</a>
   </div>
 </section>
 
 <!-- Produtos -->
-<section id="produtos" class="section">
+<section id="produtos" class="py-5">
   <div class="container text-center">
-    <h2>Produtos em Destaque</h2>
-    <div class="row" id="product-list">
-
-      <!-- Produto 1 -->
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <!-- imagem local -->
-          <img src="imagens/produto1.jpg" alt="Produto 1">
-          <div class="card-body">
-            <h5 class="card-title">Produto Local</h5>
-            <p class="card-text">Imagem carregada diretamente da pasta /imagens.</p>
-            <p><strong>10.000 AOA</strong></p>
-            <a href="login.html" class="btn-gold btn-sm">Comprar</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Produto 2 -->
-      <div class="col-md-4 mb-4">
-        <div class="card">
-          <!-- imagem externa -->
-          <img src="https://via.placeholder.com/400x200?text=Produto+Externo" alt="Produto 2">
-          <div class="card-body">
-            <h5 class="card-title">Produto Externo</h5>
-            <p class="card-text">Imagem hospedada externamente.</p>
-            <p><strong>12.500 AOA</strong></p>
-            <a href="login.html" class="btn-gold btn-sm">Comprar</a>
-          </div>
-        </div>
-      </div>
-
+    <h2 class="text-warning mb-4">Produtos em Destaque</h2>
+    <div class="row" id="listaProdutos">
+      <p>Carregando produtos...</p>
     </div>
   </div>
 </section>
 
-<!-- Rodapé -->
 <footer class="text-center">
-  &copy; 2025 ELO Commerce. Todos os direitos reservados.
+  &copy; 2025 ⚜️ ELO Commerce. Todos os direitos reservados.
 </footer>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.appspot.com",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const lista = document.getElementById("listaProdutos");
+
+  async function carregarProdutos() {
+    try {
+      const snap = await getDocs(collection(db, "produtos"));
+      if (snap.empty) {
+        lista.innerHTML = "<p class='text-muted'>Nenhum produto disponível no momento.</p>";
+        return;
+      }
+
+      let html = "";
+      snap.forEach(doc => {
+        const p = doc.data();
+        html += `
+          <div class="col-md-4 mb-4">
+            <div class="card">
+              <img src="${p.imagem || 'https://via.placeholder.com/400x200'}" alt="${p.nome}">
+              <div class="card-body">
+                <h5 class="card-title">${p.nome || 'Produto sem nome'}</h5>
+                <p class="card-text">${p.descricao || ''}</p>
+                <p><strong>${p.preco ? p.preco + ' AOA' : ''}</strong></p>
+                <a href="login.html" class="btn-gold btn-sm">Comprar</a>
+              </div>
+            </div>
+          </div>`;
+      });
+
+      lista.innerHTML = html;
+    } catch (e) {
+      lista.innerHTML = "<p class='text-danger'>Erro ao carregar produtos.</p>";
+      console.error(e);
+    }
+  }
+
+  carregarProdutos();
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+  </html>
