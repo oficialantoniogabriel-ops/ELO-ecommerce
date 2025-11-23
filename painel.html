@@ -3,22 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Painel do Criador - ELO Commerce</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
+  <title>⚜️ Painel do Criador - ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body {
-      background: #000;
+      background-color: #000;
       color: #fff;
       font-family: "Poppins", sans-serif;
-      display: none; /* Oculta até verificar login */
     }
     .navbar {
-      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
+      background: linear-gradient(90deg, #b8860b, #000);
     }
     .navbar-brand {
-      color: #fff !important;
       font-weight: 700;
+      color: #fff !important;
     }
     .sidebar {
       position: fixed;
@@ -58,7 +56,6 @@
       border: none;
       border-radius: 20px;
       padding: 8px 16px;
-      transition: 0.3s;
     }
     .btn-gold:hover {
       background-color: #ffcc00;
@@ -67,113 +64,108 @@
   </style>
 </head>
 <body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand">⚜️ Painel do Criador</a>
+      <button id="logoutBtn" class="btn btn-outline-light">Sair</button>
+    </div>
+  </nav>
 
-<!-- Navbar -->
-<nav class="navbar navbar-dark fixed-top">
-  <div class="container-fluid">
-    <a class="navbar-brand">⚜️ Painel do Criador</a>
-    <button id="logoutBtn" class="btn btn-outline-light">Sair</button>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="#" data-section="usuarios">👥 Usuários</a>
+    <a href="#" data-section="produtos">🛍️ Produtos</a>
+    <a href="#" data-section="afiliados">🤝 Afiliados</a>
+    <a href="#" data-section="saques">💰 Saques</a>
+    <a href="#" data-section="planos">📦 Planos</a>
+    <a href="#" data-section="leads">📩 Leads</a>
+    <a href="#" data-section="vendas">💸 Vendas</a>
   </div>
-</nav>
 
-<!-- Sidebar -->
-<div class="sidebar">
-  <a href="#" data-section="usuarios">👥 Usuários</a>
-  <a href="#" data-section="produtos">🛍️ Produtos</a>
-  <a href="#" data-section="afiliados">🤝 Afiliados</a>
-  <a href="#" data-section="saques">💰 Saques</a>
-  <a href="#" data-section="planos">📦 Planos</a>
-  <a href="#" data-section="leads">📩 Leads</a>
-  <a href="#" data-section="vendas">💳 Vendas</a>
-</div>
-
-<!-- Conteúdo -->
-<div class="content">
-  <h2 class="text-warning mb-4">Visão Geral do Sistema</h2>
-  <div id="conteudo">
-    <p>Selecione uma categoria na barra lateral para visualizar os dados do sistema.</p>
+  <!-- Conteúdo -->
+  <div class="content">
+    <h2 class="text-warning mb-4">📊 Visão Geral do Sistema</h2>
+    <div id="conteudo">
+      <p>Selecione uma categoria na barra lateral para visualizar os dados do sistema.</p>
+    </div>
   </div>
-</div>
 
-<!-- Firebase -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  // 🔹 Configuração do Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-    projectId: "elo-ecommerce-ecd87",
-    storageBucket: "elo-ecommerce-ecd87.appspot.com",
-    messagingSenderId: "375574231770",
-    appId: "1:375574231770:web:78279cb6aac72c454703e3"
-  };
+    // 🔑 CONFIG FIREBASE
+    const firebaseConfig = {
+      apiKey: "COLE_AQUI",
+      authDomain: "COLE_AQUI",
+      projectId: "COLE_AQUI",
+      storageBucket: "COLE_AQUI",
+      messagingSenderId: "COLE_AQUI",
+      appId: "COLE_AQUI"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const conteudo = document.getElementById("conteudo");
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  // 🔒 Verifica login antes de mostrar conteúdo
-  onAuthStateChanged(auth, user => {
-    if (!user) {
-      window.location.href = "login.html";
-    } else {
-      // Exibe conteúdo após login
-      document.body.style.display = "block";
+    const conteudo = document.getElementById("conteudo");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-      // Apenas o criador tem acesso
-      if (user.email !== "oficialantoniogabriel@gmail.com") {
+    // 🔐 Verificação de acesso
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+      } else if (user.email !== "oficialantoniogabriel@gmail.com") {
         alert("Acesso restrito. Esta página é apenas para o criador do sistema.");
-        window.location.href = "index.html";
+        signOut(auth);
+        window.location.href = "loja.html";
       }
-    }
-  });
-
-  // Logout
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
-
-  // 📊 Função para carregar coleções
-  async function carregarColecao(nome) {
-    conteudo.innerHTML = `<p class='text-warning'>Carregando ${nome}...</p>`;
-    try {
-      const snap = await getDocs(collection(db, nome));
-      if (snap.empty) {
-        conteudo.innerHTML = `<p class='text-muted'>Nenhum dado encontrado em "${nome}".</p>`;
-        return;
-      }
-      let html = `<table class="table table-dark table-striped"><thead><tr>`;
-      const firstDoc = snap.docs[0].data();
-      Object.keys(firstDoc).forEach(k => html += `<th>${k}</th>`);
-      html += "</tr></thead><tbody>";
-      snap.forEach(docSnap => {
-        const d = docSnap.data();
-        html += "<tr>";
-        Object.keys(firstDoc).forEach(k => html += `<td>${d[k] ?? "-"}</td>`);
-        html += "</tr>";
-      });
-      html += "</tbody></table>";
-      conteudo.innerHTML = html;
-    } catch (err) {
-      conteudo.innerHTML = `<p class='text-danger'>Erro ao carregar ${nome}: ${err.message}</p>`;
-    }
-  }
-
-  // Ações da sidebar
-  document.querySelectorAll(".sidebar a").forEach(link => {
-    link.addEventListener("click", e => {
-      e.preventDefault();
-      const sec = link.getAttribute("data-section");
-      carregarColecao(sec);
     });
-  });
-</script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    logoutBtn.addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+
+    // 🔹 Função para carregar coleções
+    async function carregarColecao(nome) {
+      conteudo.innerHTML = `<p class='text-warning'>Carregando ${nome}...</p>`;
+      try {
+        const snap = await getDocs(collection(db, nome));
+        if (snap.empty) {
+          conteudo.innerHTML = `<p class='text-muted'>Nenhum dado encontrado em "${nome}".</p>`;
+          return;
+        }
+        let html = `<table class="table table-dark table-striped"><thead><tr>`;
+        const firstDoc = snap.docs[0].data();
+        Object.keys(firstDoc).forEach((k) => (html += `<th>${k}</th>`));
+        html += "</tr></thead><tbody>";
+        snap.forEach((docSnap) => {
+          const d = docSnap.data();
+          html += "<tr>";
+          Object.keys(firstDoc).forEach((k) => (html += `<td>${d[k] ?? "-"}</td>`));
+          html += "</tr>";
+        });
+        html += "</tbody></table>";
+        conteudo.innerHTML = html;
+      } catch (e) {
+        conteudo.innerHTML = `<p class='text-danger'>Erro ao carregar ${nome}: ${e.message}</p>`;
+      }
+    }
+
+    // 🔸 Menu lateral
+    document.querySelectorAll(".sidebar a").forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const sec = link.getAttribute("data-section");
+        carregarColecao(sec);
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
   </html>
