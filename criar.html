@@ -3,36 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Criar Conta - ELO Commerce</title>
+  <title>🛍️ Criar Conta - ELO Commerce</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
       background: #000;
       color: #fff;
       font-family: "Poppins", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-    .container {
-      max-width: 400px;
-      margin-top: 100px;
+    .card {
       background: #111;
-      padding: 30px;
+      border: 1px solid #b8860b;
       border-radius: 15px;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+      padding: 30px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(255,215,0,0.1);
     }
     h2 {
       color: #ffcc00;
-      text-align: center;
       margin-bottom: 20px;
     }
     .form-control {
-      background: #222;
+      background: #1a1a1a;
       color: #fff;
       border: 1px solid #333;
     }
     .form-control:focus {
-      border-color: #b8860b;
-      background: #1a1a1a;
+      background: #111;
       color: #fff;
+      border-color: #b8860b;
       box-shadow: none;
     }
     .btn-gold {
@@ -42,109 +47,94 @@
       border-radius: 25px;
       padding: 10px;
       width: 100%;
-      transition: 0.3s;
       font-weight: 600;
+      transition: 0.3s;
     }
     .btn-gold:hover {
       background-color: #ffcc00;
       color: #000;
+      transform: scale(1.05);
     }
-    .text-center a {
+    a {
       color: #ffcc00;
       text-decoration: none;
     }
-    .text-center a:hover {
+    a:hover {
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h2>🛍️ Criar Conta</h2>
-  <form id="cadastroForm">
-    <div class="mb-3">
-      <label class="form-label">Nome Completo</label>
-      <input type="text" id="nome" class="form-control" required placeholder="Seu nome completo">
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Email</label>
-      <input type="email" id="email" class="form-control" required placeholder="Seu email">
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Senha</label>
-      <input type="password" id="senha" class="form-control" required placeholder="Crie uma senha segura">
-    </div>
-    <button type="submit" class="btn-gold">Criar Conta</button>
-  </form>
-
-  <div class="text-center mt-3">
-    <p>Já tem conta? <a href="login.html">Entrar</a></p>
+  <div class="card">
+    <h2>🛍️ Criar Conta</h2>
+    <form id="signupForm">
+      <div class="mb-3">
+        <label class="form-label">Nome Completo</label>
+        <input type="text" class="form-control" id="nome" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Senha</label>
+        <input type="password" class="form-control" id="senha" required minlength="6">
+      </div>
+      <button type="submit" class="btn-gold mt-3">Criar Conta</button>
+      <p class="mt-3 text-secondary">Já tem conta? <a href="login.html">Entrar</a></p>
+    </form>
   </div>
-</div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, updateProfile } 
-    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, doc, setDoc } 
-    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  // 🔹 Configuração Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-    projectId: "elo-ecommerce-ecd87",
-    storageBucket: "elo-ecommerce-ecd87.appspot.com",
-    messagingSenderId: "375574231770",
-    appId: "1:375574231770:web:78279cb6aac72c454703e3"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+      authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+      projectId: "elo-ecommerce-ecd87",
+      storageBucket: "elo-ecommerce-ecd87.appspot.com",
+      messagingSenderId: "375574231770",
+      appId: "1:375574231770:web:78279cb6aac72c454703e3"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-  const form = document.getElementById("cadastroForm");
+    const form = document.getElementById("signupForm");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+      const nome = document.getElementById("nome").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const senha = document.getElementById("senha").value.trim();
 
-    const nome = document.getElementById("nome").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const senha = document.getElementById("senha").value;
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+        await setDoc(doc(db, "usuarios", email), {
+          nome: nome,
+          email: email,
+          criadoEm: new Date()
+        });
 
-    try {
-      // 🚀 Criação do usuário
-      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
-      const user = userCredential.user;
-
-      // Atualiza o nome do perfil
-      await updateProfile(user, { displayName: nome });
-
-      // Salva dados básicos no Firestore
-      await setDoc(doc(db, "usuarios", email), {
-        nome,
-        email,
-        criadoEm: new Date(),
-        tipo: "cliente"
-      });
-
-      alert("✅ Conta criada com sucesso!");
-      window.location.href = "painel.html";
-    } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
-        alert("⚠️ Este email já está sendo usado. Tente outro ou entre na sua conta.");
-      } else if (error.code === "auth/invalid-email") {
-        alert("❌ Email inválido. Verifique e tente novamente.");
-      } else if (error.code === "auth/weak-password") {
-        alert("⚠️ A senha deve ter pelo menos 6 caracteres.");
-      } else {
-        alert("Erro ao criar conta: " + error.message);
+        alert("✅ Conta criada com sucesso!");
+        window.location.href = "login.html";
+      } catch (err) {
+        if (err.code === "auth/email-already-in-use") {
+          alert("⚠️ Este email já está em uso. Tente outro ou faça login.");
+        } else if (err.code === "auth/invalid-email") {
+          alert("❌ Email inválido. Verifique e tente novamente.");
+        } else if (err.code === "auth/weak-password") {
+          alert("⚠️ Senha muito fraca. Use pelo menos 6 caracteres.");
+        } else {
+          alert("Erro ao criar conta: " + err.message);
+        }
       }
-    }
-  });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    });
+  </script>
 </body>
   </html>
