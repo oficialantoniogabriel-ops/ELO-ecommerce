@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-AO">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Entrar - ELO Commerce</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
       background: #000;
@@ -15,15 +15,25 @@
       max-width: 400px;
       margin-top: 100px;
       background: #111;
-      border-radius: 10px;
-      padding: 25px;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.1);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
     }
     h2 {
       color: #ffcc00;
-      font-weight: 700;
       text-align: center;
       margin-bottom: 20px;
+    }
+    .form-control {
+      background: #222;
+      color: #fff;
+      border: 1px solid #333;
+    }
+    .form-control:focus {
+      border-color: #b8860b;
+      background: #1a1a1a;
+      color: #fff;
+      box-shadow: none;
     }
     .btn-gold {
       background-color: #b8860b;
@@ -31,31 +41,19 @@
       border: none;
       border-radius: 25px;
       padding: 10px;
-      font-weight: 600;
       width: 100%;
       transition: 0.3s;
+      font-weight: 600;
     }
     .btn-gold:hover {
       background-color: #ffcc00;
       color: #000;
-      transform: scale(1.03);
     }
-    .form-control {
-      background: #222;
-      color: #fff;
-      border: 1px solid #333;
-      border-radius: 25px;
-    }
-    .form-control:focus {
-      border-color: #b8860b;
-      box-shadow: none;
-      background: #1a1a1a;
-    }
-    a {
+    .text-center a {
       color: #ffcc00;
       text-decoration: none;
     }
-    a:hover {
+    .text-center a:hover {
       text-decoration: underline;
     }
   </style>
@@ -63,30 +61,30 @@
 <body>
 
 <div class="container">
-  <h2>⚜️ Entrar</h2>
+  <h2>🔐 Entrar</h2>
   <form id="loginForm">
     <div class="mb-3">
-      <label for="email" class="form-label">Email</label>
-      <input type="email" class="form-control" id="email" required />
+      <label class="form-label">Email</label>
+      <input type="email" id="email" class="form-control" required placeholder="Digite seu email">
     </div>
     <div class="mb-3">
-      <label for="senha" class="form-label">Senha</label>
-      <input type="password" class="form-control" id="senha" required />
+      <label class="form-label">Senha</label>
+      <input type="password" id="senha" class="form-control" required placeholder="Digite sua senha">
     </div>
     <button type="submit" class="btn-gold">Entrar</button>
   </form>
 
   <div class="text-center mt-3">
-    <p><a href="#" id="forgotPassword">Esqueceu sua senha?</a></p>
-    <p>Não tem conta? <a href="cadastro.html">Criar agora</a></p>
+    <p>Não tem conta? <a href="criar.html">Criar agora</a></p>
   </div>
 </div>
 
-<!-- 🔹 Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } 
+    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
+  // 🔹 Configuração do Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
     authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
@@ -100,38 +98,40 @@
   const auth = getAuth(app);
 
   const form = document.getElementById("loginForm");
-  const forgot = document.getElementById("forgotPassword");
 
-  // Login
-  form.addEventListener("submit", async (e) => {
+  // 🔐 Verifica login existente
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      redirecionar(user.email);
+    }
+  });
+
+  // 🚀 Login
+  form.addEventListener("submit", async e => {
     e.preventDefault();
     const email = document.getElementById("email").value.trim();
-    const senha = document.getElementById("senha").value.trim();
+    const senha = document.getElementById("senha").value;
 
     try {
-      await signInWithEmailAndPassword(auth, email, senha);
-      alert("✅ Login realizado com sucesso!");
-      window.location.href = "painel.html";
+      const userCredential = await signInWithEmailAndPassword(auth, email, senha);
+      const user = userCredential.user;
+      redirecionar(user.email);
     } catch (error) {
       alert("Erro ao entrar: " + error.message);
     }
   });
 
-  // Esqueci a senha
-  forgot.addEventListener("click", async (e) => {
-    e.preventDefault();
-    const email = prompt("Digite o seu email para redefinir a senha:");
-    if (!email) return;
-
-    try {
-      await sendPasswordResetEmail(auth, email);
-      alert("📩 Um link de redefinição foi enviado para seu email.");
-    } catch (error) {
-      alert("Erro ao enviar email: " + error.message);
+  // 🔄 Função de redirecionamento
+  function redirecionar(email) {
+    const emailCriador = "oficialantoniogabriel@gmail.com";
+    if (email === emailCriador) {
+      window.location.href = "admin.html"; // Painel do criador
+    } else {
+      window.location.href = "painel.html"; // Painel normal do usuário
     }
-  });
+  }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+    </html>
