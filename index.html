@@ -1,124 +1,146 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-AO">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ELO Commerce</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" />
+  <title>⚜️ ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
     body {
       background-color: #000;
-      color: #FFD700;
-      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+    }
+    header {
+      background: linear-gradient(90deg, #b8860b, #000);
       text-align: center;
+      padding: 20px;
     }
-    .navbar {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
+    header h1 {
+      font-weight: 700;
+      color: #fff;
+    }
+    header p {
+      color: #ffeb99;
+    }
+    nav {
       background-color: #111;
-      padding: 1rem;
-      border-bottom: 2px solid #FFD700;
+      text-align: center;
+      padding: 10px 0;
     }
-    .navbar a {
-      color: #FFD700;
-      font-weight: 600;
+    nav a {
+      color: #ffcc00;
       text-decoration: none;
-      transition: color 0.3s ease;
+      margin: 0 15px;
+      font-weight: 600;
+      transition: 0.3s;
     }
-    .navbar a:hover {
+    nav a:hover {
       color: #fff;
     }
     .produto-card {
-      background: #111;
-      border-radius: 10px;
-      padding: 1rem;
-      margin: 1rem;
-      display: inline-block;
-      width: 300px;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+      background-color: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      margin-bottom: 20px;
+      transition: 0.3s;
+    }
+    .produto-card:hover {
+      transform: scale(1.03);
+      border-color: #b8860b;
     }
     .produto-card img {
       width: 100%;
-      height: 200px;
+      height: 180px;
       object-fit: cover;
       border-radius: 8px;
     }
-    .btn {
-      background-color: #FFD700;
-      color: #000;
-      font-weight: 700;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      display: inline-block;
-      margin-top: 0.5rem;
-      transition: background-color 0.3s;
+    .btn-comprar {
+      background-color: #b8860b;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      margin-top: 10px;
     }
-    .btn:hover {
+    .btn-comprar:hover {
       background-color: #ffcc00;
+      color: #000;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid #222;
+      color: #aaa;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <!-- Cabeçalho -->
-  <header class="py-6 bg-gradient-to-r from-yellow-700 to-yellow-500 text-black">
-    <h1 class="text-4xl font-bold">✨ ELO Commerce</h1>
-    <p class="text-lg">Conectando Criadores e Compradores com Tecnologia</p>
+  <header>
+    <h1>⚜️ ELO Commerce</h1>
+    <p>Conectando Criadores e Compradores com Tecnologia</p>
   </header>
 
-  <!-- Menu -->
-  <nav class="navbar">
+  <nav>
     <a href="index.html">🏠 Início</a>
     <a href="loja.html">🛍️ Loja</a>
-    <a href="criar.html">📝 Criar Conta</a>
+    <a href="cadastro.html">📝 Criar Conta</a>
     <a href="login.html">🔐 Login</a>
   </nav>
 
-  <!-- Conteúdo principal -->
-  <main class="p-6">
-    <h2 class="text-3xl font-bold mb-6">Produtos em Destaque</h2>
-    
-    <div id="produtos-container" class="flex flex-wrap justify-center"></div>
-  </main>
+  <div class="container mt-5">
+    <h2 class="text-warning text-center mb-4">Produtos em Destaque</h2>
+    <div id="lista-produtos" class="row"></div>
+  </div>
 
-  <!-- Script Firebase -->
+  <footer>
+    <p>© 2025 ELO Commerce - Todos os direitos reservados.</p>
+  </footer>
+
+  <!-- Firebase -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "SEU_PROJETO.firebaseapp.com",
-      projectId: "SEU_PROJETO",
-      storageBucket: "SEU_PROJETO.appspot.com",
-      messagingSenderId: "SENDER_ID",
-      appId: "APP_ID"
+      apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+      authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+      projectId: "elo-ecommerce-ecd87",
+      storageBucket: "elo-ecommerce-ecd87.appspot.com",
+      messagingSenderId: "375574231770",
+      appId: "1:375574231770:web:78279cb6aac72c454703e3"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const produtosContainer = document.getElementById("produtos-container");
+    const lista = document.getElementById("lista-produtos");
 
     async function carregarProdutos() {
-      try {
-        const querySnapshot = await getDocs(collection(db, "produtos"));
-        querySnapshot.forEach((doc) => {
-          const produto = doc.data();
-          const card = document.createElement("div");
-          card.classList.add("produto-card");
-          card.innerHTML = `
-            <img src="${produto.imagem || 'https://via.placeholder.com/300x200?text=Sem+Imagem'}" alt="${produto.nome}">
-            <h3 class="text-xl font-semibold mt-2">${produto.nome}</h3>
-            <p class="mt-1">${produto.descricao || "Sem descrição"}</p>
-            <p class="font-bold mt-2">${produto.preco || "0"} AOA</p>
-            <a href="loja.html" class="btn">Comprar</a>
-          `;
-          produtosContainer.appendChild(card);
-        });
-      } catch (error) {
-        console.error("Erro ao carregar produtos:", error);
+      const snap = await getDocs(collection(db, "produtos"));
+      if (snap.empty) {
+        lista.innerHTML = `<p class="text-center text-muted">Nenhum produto encontrado.</p>`;
+        return;
       }
+
+      snap.forEach(doc => {
+        const p = doc.data();
+        const card = `
+          <div class="col-md-4">
+            <div class="produto-card">
+              <img src="${p.imagem || 'https://via.placeholder.com/300x180?text=Sem+Imagem'}" alt="${p.nome}">
+              <h5 class="mt-2 text-warning">${p.nome}</h5>
+              <p>${p.descricao || "Produto disponível."}</p>
+              <strong>${p.preco || "0"} AOA</strong><br>
+              <a href="loja.html" class="btn btn-comprar">Comprar</a>
+            </div>
+          </div>
+        `;
+        lista.innerHTML += card;
+      });
     }
 
     carregarProdutos();
