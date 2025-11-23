@@ -3,133 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Planos e Preços - ELO Commerce</title>
+  <title>Planos Premium - ELO Commerce</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body {background-color:#000;color:#f5f5f5;font-family:'Poppins',sans-serif;}
-    nav.navbar{background:linear-gradient(90deg,#b8860b 0%,#000 100%);}
-    .navbar-brand{color:#fff!important;font-weight:bold;}
-    .navbar-nav .nav-link{color:#fff!important;margin:0 5px;transition:.3s;}
-    .navbar-nav .nav-link:hover{color:#ffcc00!important;}
-    .btn-gold{background:#b8860b;color:#fff;border:none;padding:10px 24px;border-radius:30px;font-weight:600;}
-    .btn-gold:hover{background:#ffcc00;color:#000;transform:scale(1.05);}
-    h1,h2{color:#ffcc00;}
-    .card{background-color:#111;border:1px solid #222;border-radius:15px;color:#fff;transition:all .3s ease;}
-    .card:hover{transform:translateY(-5px);box-shadow:0 8px 20px rgba(255,215,0,.2);}
-    footer{background:#000;color:#aaa;padding:20px 0;}
+    body { background:#000; color:#f5f5f5; font-family:"Poppins",sans-serif; }
+    .navbar { background: linear-gradient(90deg,#b8860b 0%,#000 100%); }
+    .navbar-brand { color:#fff !important; font-weight:700; }
+    .card {
+      background:#111; border:1px solid #222; border-radius:15px;
+      box-shadow:0 0 12px rgba(255,215,0,0.15);
+      color:#fff; transition:0.3s;
+    }
+    .card:hover { transform:scale(1.03); box-shadow:0 0 25px rgba(255,215,0,0.3); }
+    .btn-gold {
+      background-color:#b8860b; border:none; color:#fff;
+      border-radius:25px; font-weight:600; transition:0.3s;
+    }
+    .btn-gold:hover { background-color:#ffcc00; color:#000; }
+    h2.text-warning { text-shadow:0 0 6px #b8860b; }
   </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark">
-  <div class="container">
-    <a class="navbar-brand" href="index.html">⚜️ ELO Commerce</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="nav">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
-        <li class="nav-item"><a class="nav-link" href="planos.html">Planos</a></li>
-        <li class="nav-item"><a class="nav-link" href="afiliados.html">Afiliados</a></li>
-        <li class="nav-item"><a class="nav-link" href="painel.html">Painel</a></li>
-        <li class="nav-item"><a class="nav-link" href="carteira.html">Carteira</a></li>
-        <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-        <li class="nav-item"><a class="nav-link btn btn-gold ms-2" href="cadastro.html">Cadastrar</a></li>
-      </ul>
-    </div>
+<nav class="navbar navbar-dark fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="painel.html">⚜️ ELO Commerce</a>
+    <button id="logoutBtn" class="btn btn-outline-light">Sair</button>
   </div>
 </nav>
 
-<!-- Conteúdo -->
-<section class="py-5 text-center">
-  <div class="container">
-    <h1 class="mb-4">Planos e Preços</h1>
-    <p class="mb-5 text-light">Escolha o plano ideal para o seu negócio e comece a vender hoje mesmo.</p>
-    <div class="row">
-      
-      <!-- Plano Grátis -->
-      <div class="col-md-4 mb-4">
-        <div class="card p-3 h-100">
-          <h4 class="text-warning">Grátis</h4>
-          <h2>0 AOA/mês</h2>
-          <p>Loja básica com até 3 produtos</p>
-          <div class="mt-3">
-            <!-- Conectar com PayPal SDK (plano grátis) -->
-            <button class="btn btn-gold" disabled>Ativar Grátis</button>
-          </div>
-        </div>
-      </div>
+<div class="container" style="margin-top:90px;">
+  <h2 class="text-warning text-center mb-4">Escolha o Seu Plano Premium</h2>
 
-      <!-- Plano Profissional -->
-      <div class="col-md-4 mb-4">
-        <div class="card p-3 h-100">
-          <h4 class="text-warning">Profissional</h4>
-          <h2>5.000 AOA/mês</h2>
-          <p>Loja completa, suporte técnico e destaque nos resultados</p>
-          <div class="mt-3">
-            <!-- Botão PayPal real: substitua pelo SDK real -->
-            <div id="paypal-prof"></div>
-            <!-- Conectar com PayPal SDK -->
-          </div>
-        </div>
+  <div class="row g-4 text-center">
+    <div class="col-md-4">
+      <div class="card p-3">
+        <h4 class="text-warning">Plano Bronze</h4>
+        <p>Acesso básico às funcionalidades principais.</p>
+        <h5 class="text-light">2.000 Kz / mês</h5>
+        <button class="btn-gold w-100 mt-2" onclick="assinarPlano('Bronze',2000)">Assinar</button>
       </div>
+    </div>
 
-      <!-- Plano Premium -->
-      <div class="col-md-4 mb-4">
-        <div class="card p-3 h-100">
-          <h4 class="text-warning">Premium</h4>
-          <h2>10.000 AOA/mês</h2>
-          <p>Produtos ilimitados, destaque global e suporte prioritário</p>
-          <div class="mt-3">
-            <!-- Botão PayPal real: substitua pelo SDK real -->
-            <div id="paypal-prem"></div>
-            <!-- Conectar com PayPal SDK -->
-          </div>
-        </div>
+    <div class="col-md-4">
+      <div class="card p-3">
+        <h4 class="text-warning">Plano Prata</h4>
+        <p>Inclui recursos extras e destaque em vendas.</p>
+        <h5 class="text-light">5.000 Kz / mês</h5>
+        <button class="btn-gold w-100 mt-2" onclick="assinarPlano('Prata',5000)">Assinar</button>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card p-3">
+        <h4 class="text-warning">Plano Ouro</h4>
+        <p>Todos os benefícios + suporte premium e loja verificada.</p>
+        <h5 class="text-light">10.000 Kz / mês</h5>
+        <button class="btn-gold w-100 mt-2" onclick="assinarPlano('Ouro',10000)">Assinar</button>
       </div>
     </div>
   </div>
-</section>
 
-<!-- Rodapé -->
-<footer class="text-center">
+  <div id="msg" class="text-center mt-4"></div>
+</div>
+
+<footer class="text-center mt-5 py-3 bg-black text-secondary">
   &copy; 2025 ELO Commerce. Todos os direitos reservados.
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, setDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-<!-- Integração PayPal -->
-<script src="https://www.paypal.com/sdk/js?client-id=AHAC826M72KA6&currency=AOA"></script>
-<script>
-  // --- Conectar com PayPal SDK ---
-  paypal.Buttons({
-    createOrder: (data, actions) => {
-      return actions.order.create({ purchase_units: [{ amount: { value: '5000' } }] });
-    },
-    onApprove: (data, actions) => {
-      return actions.order.capture().then(function(details) {
-        alert('Plano Profissional ativado com sucesso!');
-        // Redirecionar para painel.html
-        window.location.href = "painel.html";
-      });
-    }
-  }).render('#paypal-prof');
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.appspot.com",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
 
-  paypal.Buttons({
-    createOrder: (data, actions) => {
-      return actions.order.create({ purchase_units: [{ amount: { value: '10000' } }] });
-    },
-    onApprove: (data, actions) => {
-      return actions.order.capture().then(function(details) {
-        alert('Plano Premium ativado com sucesso!');
-        // Redirecionar para painel.html
-        window.location.href = "painel.html";
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const msg = document.getElementById("msg");
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) window.location.href = "login.html";
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "login.html";
+  });
+
+  // Assinar plano
+  async function assinarPlano(nome, preco) {
+    const user = auth.currentUser;
+    if (!user) return alert("Faça login para continuar.");
+
+    try {
+      await setDoc(doc(db, "assinaturas", user.email), {
+        email: user.email,
+        plano: nome,
+        preco: preco,
+        ativo: true,
+        metodoPagamento: "Manual",
+        dataInicio: serverTimestamp()
       });
+
+      msg.innerHTML = `<div class='alert alert-success mt-3'>
+        ✅ Assinatura do plano <strong>${nome}</strong> registrada com sucesso!
+      </div>`;
+    } catch (err) {
+      msg.innerHTML = `<div class='alert alert-danger mt-3'>Erro: ${err.message}</div>`;
     }
-  }).render('#paypal-prem');
+  }
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-  </html>
+</html>
