@@ -1,106 +1,63 @@
 <!DOCTYPE html>
 <html lang="pt-AO">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel - ELO Commerce</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Criador - ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: "Poppins", sans-serif;
-    }
-    .navbar {
-      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
-    }
-    .navbar-brand {
-      color: #fff !important;
-      font-weight: 700;
-    }
-    .sidebar {
-      position: fixed;
-      top: 56px;
-      left: 0;
-      width: 220px;
-      height: 100%;
-      background-color: #111;
-      border-right: 1px solid #222;
-      padding-top: 20px;
-    }
-    .sidebar a {
-      display: block;
-      padding: 10px 20px;
-      color: #ffcc00;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-    .sidebar a:hover {
-      background-color: #b8860b;
-      color: #000;
-    }
-    .content {
-      margin-left: 230px;
-      padding: 30px;
-    }
-    .btn-gold {
-      background-color: #b8860b;
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 8px 16px;
-      transition: 0.3s;
-    }
-    .btn-gold:hover {
-      background-color: #ffcc00;
-      color: #000;
-    }
-    table {
-      width: 100%;
-      color: #fff;
-    }
-    table th {
-      color: #ffcc00;
-    }
+    body { background: #000; color: #fff; font-family: "Poppins", sans-serif; }
+    .navbar { background: linear-gradient(90deg, #b8860b 0%, #000 100%); }
+    .navbar-brand { color: #fff !important; font-weight: 700; }
+    .sidebar { position: fixed; top: 56px; left: 0; width: 220px; height: 100%;
+      background-color: #111; border-right: 1px solid #222; padding-top: 20px; overflow-y: auto; }
+    .sidebar a { display: block; padding: 10px 20px; color: #ffcc00; text-decoration: none; transition: 0.3s; }
+    .sidebar a:hover { background-color: #b8860b; color: #000; }
+    .content { margin-left: 230px; padding: 30px; }
+    .card { background: #111; border: 1px solid #222; border-radius: 10px; padding: 15px; color: #fff; }
+    .card h5 { color: #ffcc00; }
+    .btn-gold { background-color: #b8860b; color: #fff; border: none; border-radius: 20px; padding: 8px 16px; transition: 0.3s; }
+    .btn-gold:hover { background-color: #ffcc00; color: #000; }
+    table { width: 100%; color: #fff; }
+    table th { color: #ffcc00; }
   </style>
 </head>
 <body>
 
-<!-- Navbar -->
+<!-- 🔸 Navbar -->
 <nav class="navbar navbar-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand">⚜️ Painel ELO</a>
-    <div class="d-flex align-items-center">
-      <a href="configuracoes.html" class="btn btn-gold me-2">⚙️ Configurações</a>
-      <button id="logoutBtn" class="btn btn-outline-light">Sair</button>
-    </div>
+    <a class="navbar-brand">⚜️ Painel do Criador</a>
+    <button id="logoutBtn" class="btn btn-outline-light">Sair</button>
   </div>
 </nav>
 
-<!-- Sidebar -->
+<!-- 🔸 Sidebar -->
 <div class="sidebar">
   <a href="#" data-section="usuarios">👥 Usuários</a>
   <a href="#" data-section="produtos">🛍️ Produtos</a>
   <a href="#" data-section="afiliados">🤝 Afiliados</a>
   <a href="#" data-section="saques">💰 Saques</a>
   <a href="#" data-section="planos">📦 Planos</a>
+  <a href="#" data-section="leads">📧 Leads</a>
+  <a href="#" data-section="vendas">💸 Vendas</a>
 </div>
 
-<!-- Conteúdo -->
+<!-- 🔸 Conteúdo -->
 <div class="content">
-  <h2 class="text-warning mb-4">📊 Visão Geral</h2>
+  <h2 class="text-warning mb-4">Visão Geral do Sistema</h2>
   <div id="conteudo">
-    <p>Selecione uma seção na barra lateral para visualizar os dados do sistema.</p>
+    <p>Selecione uma categoria na barra lateral para visualizar os dados do sistema.</p>
   </div>
 </div>
 
-<!-- Firebase -->
+<!-- 🔸 Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  // 🔹 Configuração Firebase
+  // 🔹 Configuração Firebase (oficial)
   const firebaseConfig = {
     apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
     authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
@@ -110,46 +67,67 @@
     appId: "1:375574231770:web:78279cb6aac72c454703e3"
   };
 
+  // 🔹 Inicialização
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
   const conteudo = document.getElementById("conteudo");
 
-  // 🔒 Verificação de login
-  onAuthStateChanged(auth, user => {
-    if (!user) window.location.href = "login.html";
-  });
-
-  // 🚪 Logout
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
-
-  // 📦 Carregar coleções do Firestore
-  async function carregarColecao(nome) {
-    conteudo.innerHTML = `<p class='text-warning'>Carregando ${nome}...</p>`;
-    const snap = await getDocs(collection(db, nome));
-    if (snap.empty) {
-      conteudo.innerHTML = `<p class='text-muted'>Nenhum dado encontrado em "${nome}".</p>`;
+  // 🔹 Verifica login e restringe acesso apenas ao criador
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "login.html";
       return;
     }
-    let html = `<table class="table table-dark table-striped"><thead><tr>`;
-    const firstDoc = snap.docs[0].data();
-    Object.keys(firstDoc).forEach(k => html += `<th>${k}</th>`);
-    html += "</tr></thead><tbody>";
-    snap.forEach(docSnap => {
-      const d = docSnap.data();
-      html += "<tr>";
-      Object.keys(firstDoc).forEach(k => html += `<td>${d[k] ?? "-"}</td>`);
-      html += "</tr>";
-    });
-    html += "</tbody></table>";
-    conteudo.innerHTML = html;
+    if (user.email !== "oficialantoniogabriel@gmail.com") {
+      alert("Acesso restrito. Esta página é apenas para o criador do sistema.");
+      signOut(auth);
+      window.location.href = "login.html";
+    }
+  });
+
+  // 🔹 Botão SAIR
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      alert("Você saiu com sucesso!");
+      window.location.href = "login.html";
+    } catch (error) {
+      alert("Erro ao sair: " + error.message);
+    }
+  });
+
+  // 🔹 Função genérica para carregar qualquer coleção
+  async function carregarColecao(nome) {
+    conteudo.innerHTML = `<p class='text-warning'>Carregando ${nome}...</p>`;
+    try {
+      const snap = await getDocs(collection(db, nome));
+      if (snap.empty) {
+        conteudo.innerHTML = `<p class='text-muted'>Nenhum dado encontrado em "${nome}".</p>`;
+        return;
+      }
+
+      let html = `<table class="table table-dark table-striped"><thead><tr>`;
+      const firstDoc = snap.docs[0].data();
+      Object.keys(firstDoc).forEach(k => html += `<th>${k}</th>`);
+      html += "</tr></thead><tbody>";
+
+      snap.forEach(docSnap => {
+        const d = docSnap.data();
+        html += "<tr>";
+        Object.keys(firstDoc).forEach(k => html += `<td>${d[k] ?? "-"}</td>`);
+        html += "</tr>";
+      });
+
+      html += "</tbody></table>";
+      conteudo.innerHTML = html;
+    } catch (err) {
+      conteudo.innerHTML = `<p class='text-danger'>Erro ao carregar ${nome}: ${err.message}</p>`;
+    }
   }
 
-  // 🧭 Ações da sidebar
+  // 🔹 Eventos da sidebar
   document.querySelectorAll(".sidebar a").forEach(link => {
     link.addEventListener("click", e => {
       e.preventDefault();
@@ -161,167 +139,4 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-  </html><!DOCTYPE html>
-<html lang="pt-AO">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel - ELO Commerce</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: "Poppins", sans-serif;
-    }
-    .navbar {
-      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
-    }
-    .navbar-brand {
-      color: #fff !important;
-      font-weight: 700;
-    }
-    .sidebar {
-      position: fixed;
-      top: 56px;
-      left: 0;
-      width: 220px;
-      height: 100%;
-      background-color: #111;
-      border-right: 1px solid #222;
-      padding-top: 20px;
-    }
-    .sidebar a {
-      display: block;
-      padding: 10px 20px;
-      color: #ffcc00;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-    .sidebar a:hover {
-      background-color: #b8860b;
-      color: #000;
-    }
-    .content {
-      margin-left: 230px;
-      padding: 30px;
-    }
-    .btn-gold {
-      background-color: #b8860b;
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 8px 16px;
-      transition: 0.3s;
-    }
-    .btn-gold:hover {
-      background-color: #ffcc00;
-      color: #000;
-    }
-    table {
-      width: 100%;
-      color: #fff;
-    }
-    table th {
-      color: #ffcc00;
-    }
-  </style>
-</head>
-<body>
-
-<!-- Navbar -->
-<nav class="navbar navbar-dark fixed-top">
-  <div class="container-fluid">
-    <a class="navbar-brand">⚜️ Painel ELO</a>
-    <div class="d-flex align-items-center">
-      <a href="configuracoes.html" class="btn btn-gold me-2">⚙️ Configurações</a>
-      <button id="logoutBtn" class="btn btn-outline-light">Sair</button>
-    </div>
-  </div>
-</nav>
-
-<!-- Sidebar -->
-<div class="sidebar">
-  <a href="#" data-section="usuarios">👥 Usuários</a>
-  <a href="#" data-section="produtos">🛍️ Produtos</a>
-  <a href="#" data-section="afiliados">🤝 Afiliados</a>
-  <a href="#" data-section="saques">💰 Saques</a>
-  <a href="#" data-section="planos">📦 Planos</a>
-</div>
-
-<!-- Conteúdo -->
-<div class="content">
-  <h2 class="text-warning mb-4">📊 Visão Geral</h2>
-  <div id="conteudo">
-    <p>Selecione uma seção na barra lateral para visualizar os dados do sistema.</p>
-  </div>
-</div>
-
-<!-- Firebase -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-  // 🔹 Configuração Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-    projectId: "elo-ecommerce-ecd87",
-    storageBucket: "elo-ecommerce-ecd87.appspot.com",
-    messagingSenderId: "375574231770",
-    appId: "1:375574231770:web:78279cb6aac72c454703e3"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  const conteudo = document.getElementById("conteudo");
-
-  // 🔒 Verificação de login
-  onAuthStateChanged(auth, user => {
-    if (!user) window.location.href = "login.html";
-  });
-
-  // 🚪 Logout
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    await signOut(auth);
-    window.location.href = "login.html";
-  });
-
-  // 📦 Carregar coleções do Firestore
-  async function carregarColecao(nome) {
-    conteudo.innerHTML = `<p class='text-warning'>Carregando ${nome}...</p>`;
-    const snap = await getDocs(collection(db, nome));
-    if (snap.empty) {
-      conteudo.innerHTML = `<p class='text-muted'>Nenhum dado encontrado em "${nome}".</p>`;
-      return;
-    }
-    let html = `<table class="table table-dark table-striped"><thead><tr>`;
-    const firstDoc = snap.docs[0].data();
-    Object.keys(firstDoc).forEach(k => html += `<th>${k}</th>`);
-    html += "</tr></thead><tbody>";
-    snap.forEach(docSnap => {
-      const d = docSnap.data();
-      html += "<tr>";
-      Object.keys(firstDoc).forEach(k => html += `<td>${d[k] ?? "-"}</td>`);
-      html += "</tr>";
-    });
-    html += "</tbody></table>";
-    conteudo.innerHTML = html;
-  }
-
-  // 🧭 Ações da sidebar
-  document.querySelectorAll(".sidebar a").forEach(link => {
-    link.addEventListener("click", e => {
-      e.preventDefault();
-      const sec = link.getAttribute("data-section");
-      carregarColecao(sec);
-    });
-  });
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-  </html>
+</html>
