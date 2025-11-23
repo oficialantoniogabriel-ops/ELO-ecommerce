@@ -3,182 +3,157 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>⚜️ ELO Commerce - Conectando Empreendedores Africanos</title>
+  <title>ELO Commerce - Sua Loja Inteligente</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
       background-color: #000;
-      color: #f5f5f5;
+      color: #fff;
       font-family: "Poppins", sans-serif;
     }
-    nav.navbar {
+    header {
       background: linear-gradient(90deg, #b8860b 0%, #000 100%);
-    }
-    .navbar-brand {
-      color: #fff !important;
-      font-weight: bold;
-      font-size: 1.3rem;
-    }
-    .navbar-nav .nav-link {
-      color: #f5f5f5 !important;
-      font-weight: 500;
-      transition: color 0.3s ease;
-    }
-    .navbar-nav .nav-link:hover {
-      color: #ffcc00 !important;
-    }
-    .hero {
-      background: linear-gradient(135deg, #b8860b, #000);
-      padding: 120px 0;
+      padding: 20px;
+      text-align: center;
       color: #fff;
+    }
+    .navbar {
+      background-color: #111;
+      border-bottom: 1px solid #222;
+    }
+    .navbar a {
+      color: #ffcc00;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: 500;
+    }
+    .navbar a:hover {
+      color: #fff;
+    }
+    h2 {
+      color: #ffcc00;
+      margin: 40px 0 20px;
       text-align: center;
     }
-    .hero h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
+    .card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 15px;
+      padding: 10px;
+      color: #fff;
+      text-align: center;
+      transition: transform 0.3s;
     }
-    .hero p {
-      font-size: 1.1rem;
-      margin: 20px 0 40px;
+    .card:hover {
+      transform: scale(1.03);
+    }
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
     }
     .btn-gold {
       background-color: #b8860b;
       color: #fff;
       border: none;
-      padding: 12px 28px;
-      border-radius: 30px;
+      border-radius: 25px;
+      padding: 8px 16px;
+      transition: 0.3s;
       font-weight: 600;
-      transition: all 0.3s ease;
     }
     .btn-gold:hover {
       background-color: #ffcc00;
       color: #000;
-      transform: scale(1.05);
-    }
-    .card {
-      background-color: #111;
-      border: 1px solid #222;
-      border-radius: 12px;
-      color: #fff;
-      transition: all 0.3s ease;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2);
-    }
-    .card img {
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      height: 200px;
-      object-fit: cover;
-      width: 100%;
     }
     footer {
-      background: #000;
-      color: #aaa;
-      padding: 20px 0;
-      font-size: 0.9rem;
+      background-color: #111;
+      text-align: center;
+      padding: 20px;
+      color: #888;
+      border-top: 1px solid #222;
+      margin-top: 50px;
     }
   </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark">
-  <div class="container">
-    <a class="navbar-brand" href="index.html">⚜️ ELO Commerce</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="nav">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="#produtos">Produtos</a></li>
-        <li class="nav-item"><a class="nav-link" href="planos.html">Planos</a></li>
-        <li class="nav-item"><a class="nav-link" href="afiliados.html">Afiliados</a></li>
-        <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-        <li class="nav-item"><a class="nav-link btn btn-gold ms-2" href="cadastro.html">Cadastrar</a></li>
-      </ul>
+  <header>
+    <h1>⚜️ ELO Commerce</h1>
+    <p>Conectando Criadores e Compradores com Tecnologia</p>
+  </header>
+
+  <nav class="navbar justify-content-center">
+    <a href="index.html">🏠 Início</a>
+    <a href="loja.html">🛍️ Loja</a>
+    <a href="criar.html">🧾 Criar Conta</a>
+    <a href="login.html">🔐 Login</a>
+  </nav>
+
+  <div class="container my-5">
+    <h2>Produtos em Destaque</h2>
+    <div class="row" id="produtosContainer">
+      <p class="text-center text-warning">Carregando produtos...</p>
     </div>
   </div>
-</nav>
 
-<!-- Hero -->
-<section class="hero">
-  <div class="container">
-    <h1>Conectando empreendedores africanos ao mercado global</h1>
-    <p>Venda seus produtos, inspire sua comunidade e cresça com o ELO Commerce.</p>
-    <a href="#produtos" class="btn-gold">Explorar Produtos</a>
-  </div>
-</section>
+  <footer>
+    &copy; 2025 ELO Commerce — Todos os direitos reservados.
+  </footer>
 
-<!-- Produtos -->
-<section id="produtos" class="py-5">
-  <div class="container text-center">
-    <h2 class="text-warning mb-4">Produtos em Destaque</h2>
-    <div class="row" id="listaProdutos">
-      <p>Carregando produtos...</p>
-    </div>
-  </div>
-</section>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-<footer class="text-center">
-  &copy; 2025 ⚜️ ELO Commerce. Todos os direitos reservados.
-</footer>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+      authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+      projectId: "elo-ecommerce-ecd87",
+      storageBucket: "elo-ecommerce-ecd87.appspot.com",
+      messagingSenderId: "375574231770",
+      appId: "1:375574231770:web:78279cb6aac72c454703e3"
+    };
 
-<!-- Firebase -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-    projectId: "elo-ecommerce-ecd87",
-    storageBucket: "elo-ecommerce-ecd87.appspot.com",
-    messagingSenderId: "375574231770",
-    appId: "1:375574231770:web:78279cb6aac72c454703e3"
-  };
+    const container = document.getElementById("produtosContainer");
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    async function carregarProdutos() {
+      try {
+        const snap = await getDocs(collection(db, "produtos"));
+        if (snap.empty) {
+          container.innerHTML = "<p class='text-center text-muted'>Nenhum produto disponível no momento.</p>";
+          return;
+        }
 
-  const lista = document.getElementById("listaProdutos");
-
-  async function carregarProdutos() {
-    try {
-      const snap = await getDocs(collection(db, "produtos"));
-      if (snap.empty) {
-        lista.innerHTML = "<p class='text-muted'>Nenhum produto disponível no momento.</p>";
-        return;
-      }
-
-      let html = "";
-      snap.forEach(doc => {
-        const p = doc.data();
-        html += `
-          <div class="col-md-4 mb-4">
-            <div class="card">
-              <img src="${p.imagem || 'https://via.placeholder.com/400x200'}" alt="${p.nome}">
-              <div class="card-body">
-                <h5 class="card-title">${p.nome || 'Produto sem nome'}</h5>
-                <p class="card-text">${p.descricao || ''}</p>
-                <p><strong>${p.preco ? p.preco + ' AOA' : ''}</strong></p>
-                <a href="login.html" class="btn-gold btn-sm">Comprar</a>
+        let html = "";
+        snap.forEach(doc => {
+          const p = doc.data();
+          const imagem = p.imagem || "https://via.placeholder.com/400x200?text=Sem+Imagem";
+          html += `
+            <div class="col-md-4 col-sm-6 mb-4">
+              <div class="card">
+                <img src="${imagem}" alt="${p.nome}">
+                <h5 class="mt-3">${p.nome}</h5>
+                <p class="text-secondary">${p.descricao || "Sem descrição"}</p>
+                <p class="fw-bold text-warning">${p.preco || "0"} AOA</p>
+                <button class="btn-gold">Comprar</button>
               </div>
             </div>
-          </div>`;
-      });
+          `;
+        });
+        container.innerHTML = html;
 
-      lista.innerHTML = html;
-    } catch (e) {
-      lista.innerHTML = "<p class='text-danger'>Erro ao carregar produtos.</p>";
-      console.error(e);
+      } catch (err) {
+        container.innerHTML = `<p class='text-danger text-center'>Erro ao carregar produtos: ${err.message}</p>`;
+      }
     }
-  }
 
-  carregarProdutos();
-</script>
+    carregarProdutos();
+  </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-  </html>
+    </html>
