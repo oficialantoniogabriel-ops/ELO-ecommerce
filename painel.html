@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel - ELO Commerce</title>
+  <title>Painel do Usuário - ELO Commerce</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
   <style>
     body {
-      background-color: #000;
+      background: #000;
       color: #fff;
       font-family: "Poppins", sans-serif;
     }
@@ -16,247 +15,153 @@
       background: linear-gradient(90deg, #b8860b 0%, #000 100%);
     }
     .navbar-brand {
-      font-weight: bold;
       color: #fff !important;
+      font-weight: 700;
+    }
+    .sidebar {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background-color: #111;
+      border-right: 1px solid #222;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      display: block;
+      padding: 10px 20px;
+      color: #ffcc00;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+    .sidebar a:hover {
+      background-color: #b8860b;
+      color: #000;
+    }
+    .content {
+      margin-left: 230px;
+      padding: 30px;
     }
     .btn-gold {
       background-color: #b8860b;
       color: #fff;
       border: none;
       border-radius: 20px;
-      padding: 8px 18px;
+      padding: 8px 16px;
       transition: 0.3s;
     }
     .btn-gold:hover {
       background-color: #ffcc00;
       color: #000;
     }
-    .card {
-      background-color: #111;
-      border: 1px solid #333;
+    table {
+      width: 100%;
+      color: #fff;
     }
-    .card h5 {
+    table th {
       color: #ffcc00;
-    }
-    .section-title {
-      margin-top: 40px;
-      margin-bottom: 15px;
-      color: #ffcc00;
-      text-align: center;
-      font-weight: 600;
     }
   </style>
 </head>
-
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand">⚜️ ELO Commerce</a>
-      <div class="ms-auto">
-        <button id="perfilBtn" class="btn btn-outline-light me-2">👤 Perfil</button>
-        <button id="homeBtn" class="btn btn-outline-light me-2">🏠 Início</button>
-        <button id="logoutBtn" class="btn btn-gold">Sair</button>
-      </div>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand">⚜️ Painel do Usuário</a>
+    <div class="ms-auto">
+      <button id="inicioBtn" class="btn btn-outline-light me-2">🏠 Início</button>
+      <button id="logoutBtn" class="btn btn-gold">Sair</button>
     </div>
-  </nav>
-
-  <div class="container my-4">
-
-    <!-- Carteira -->
-    <h4 class="section-title">💰 Carteira</h4>
-    <div class="card p-3 mb-3">
-      <p><strong>Saldo:</strong> <span id="saldo">Carregando...</span></p>
-      <button id="adicionarFundoBtn" class="btn btn-gold me-2">Adicionar Fundos</button>
-      <button id="sacarBtn" class="btn btn-outline-light">Sacar</button>
-    </div>
-
-    <!-- Criar Produto -->
-    <h4 class="section-title">📦 Criar Produto</h4>
-    <div class="card p-3 mb-3">
-      <form id="produtoForm">
-        <div class="mb-3">
-          <label>Nome do Produto</label>
-          <input type="text" id="nomeProduto" class="form-control" required>
-        </div>
-        <div class="mb-3">
-          <label>Descrição</label>
-          <textarea id="descricaoProduto" class="form-control" rows="3" required></textarea>
-        </div>
-        <div class="mb-3">
-          <label>Preço (KZ)</label>
-          <input type="number" id="precoProduto" class="form-control" step="0.01" required>
-        </div>
-        <div class="mb-3">
-          <label>Arquivo do Produto (opcional)</label>
-          <input type="file" id="arquivoProduto" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-gold">Salvar Produto</button>
-      </form>
-    </div>
-
-    <!-- Lista de Produtos -->
-    <h4 class="section-title">🛍️ Meus Produtos</h4>
-    <div id="listaProdutos"></div>
-
-    <!-- Vendas -->
-    <h4 class="section-title">📊 Minhas Vendas</h4>
-    <div id="vendasList" class="text-center text-secondary">Carregando vendas...</div>
-
   </div>
+</nav>
 
-  <footer class="text-center py-3" style="background:#111; color:#777;">
-    &copy; 2025 ⚜️ ELO Commerce — Todos os direitos reservados.
-  </footer>
+<!-- Sidebar -->
+<div class="sidebar">
+  <a href="#" data-section="perfil">👤 Perfil</a>
+  <a href="#" data-section="produtos">🛍️ Produtos</a>
+  <a href="#" data-section="vendas">💰 Vendas</a>
+  <a href="#" data-section="carteira">💳 Carteira</a>
+  <a href="painel-lojas.html">🛒 Minhas Lojas</a>
+  <a href="#" data-section="afiliados">🤝 Afiliados</a>
+  <a href="#" data-section="planos">📦 Planos</a>
+</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { 
-      getAuth, onAuthStateChanged, signOut 
-    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { 
-      getFirestore, doc, getDoc, setDoc, collection, addDoc, query, where, getDocs 
-    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-    import { 
-      getStorage, ref, uploadBytes, getDownloadURL 
-    } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
+<!-- Conteúdo -->
+<div class="content">
+  <h2 class="text-warning mb-4">Bem-vindo(a) ao seu painel!</h2>
+  <div id="conteudo">
+    <p>Selecione uma seção na barra lateral para gerenciar seus dados.</p>
+  </div>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-      authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-      projectId: "elo-ecommerce-ecd87",
-      storageBucket: "elo-ecommerce-ecd87.appspot.com",
-      messagingSenderId: "375574231770",
-      appId: "1:375574231770:web:78279cb6aac72c454703e3"
-    };
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.appspot.com",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
 
-    const saldoEl = document.getElementById("saldo");
-    const produtoForm = document.getElementById("produtoForm");
-    const listaProdutos = document.getElementById("listaProdutos");
-    const vendasList = document.getElementById("vendasList");
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    let userEmail = "";
+  const conteudo = document.getElementById("conteudo");
 
-    // 🔹 Verifica se o usuário está autenticado
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-        return;
-      }
-      userEmail = user.email;
-      carregarCarteira();
-      carregarProdutos();
-      carregarVendas();
-    });
+  onAuthStateChanged(auth, user => {
+    if (!user) window.location.href = "login.html";
+    else conteudo.innerHTML = `<h4 class="text-warning">Olá, ${user.email}</h4><p>Gerencie sua conta, produtos e lojas!</p>`;
+  });
 
-    // 🔹 Botão sair
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      await signOut(auth);
-      sessionStorage.clear();
-      localStorage.clear();
-      window.location.replace("index.html");
-    });
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "index.html";
+  });
 
-    // 🔹 Botão início
-    document.getElementById("homeBtn").addEventListener("click", () => {
-      window.location.href = "index.html";
-    });
+  document.getElementById("inicioBtn").addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
 
-    // 🔹 Botão perfil
-    document.getElementById("perfilBtn").addEventListener("click", () => {
-      window.location.href = "perfil.html";
-    });
-
-    // 🪙 Carteira
-    async function carregarCarteira() {
-      const refDoc = doc(db, "usuarios", userEmail);
-      const snap = await getDoc(refDoc);
-      if (snap.exists()) {
-        const data = snap.data();
-        saldoEl.textContent = `${(data.saldo ?? 0).toFixed(2)} KZ`;
-      } else {
-        await setDoc(refDoc, { email: userEmail, saldo: 0 });
-        saldoEl.textContent = "0.00 KZ";
-      }
+  // Carregar coleções Firestore dinamicamente
+  async function carregarColecao(nome) {
+    conteudo.innerHTML = `<p class='text-warning'>Carregando ${nome}...</p>`;
+    const snap = await getDocs(collection(db, nome));
+    if (snap.empty) {
+      conteudo.innerHTML = `<p class='text-muted'>Nenhum dado encontrado em "${nome}".</p>`;
+      return;
     }
+    let html = `<table class="table table-dark table-striped"><thead><tr>`;
+    const firstDoc = snap.docs[0].data();
+    Object.keys(firstDoc).forEach(k => html += `<th>${k}</th>`);
+    html += "</tr></thead><tbody>";
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      html += "<tr>";
+      Object.keys(firstDoc).forEach(k => html += `<td>${d[k] ?? "-"}</td>`);
+      html += "</tr>";
+    });
+    html += "</tbody></table>";
+    conteudo.innerHTML = html;
+  }
 
-    // 📦 Criar produto
-    produtoForm.addEventListener("submit", async (e) => {
+  document.querySelectorAll(".sidebar a[data-section]").forEach(link => {
+    link.addEventListener("click", e => {
       e.preventDefault();
-      const nome = document.getElementById("nomeProduto").value;
-      const descricao = document.getElementById("descricaoProduto").value;
-      const preco = parseFloat(document.getElementById("precoProduto").value);
-      const arquivo = document.getElementById("arquivoProduto").files[0];
-      let arquivoURL = "";
-
-      try {
-        if (arquivo) {
-          const fileRef = ref(storage, "produtos/" + userEmail + "/" + arquivo.name);
-          await uploadBytes(fileRef, arquivo);
-          arquivoURL = await getDownloadURL(fileRef);
-        }
-
-        await addDoc(collection(db, "produtos"), {
-          nome, descricao, preco, arquivoURL,
-          vendedor: userEmail,
-          criadoEm: new Date()
-        });
-
-        alert("✅ Produto salvo com sucesso!");
-        produtoForm.reset();
-        carregarProdutos();
-      } catch (err) {
-        alert("Erro ao salvar: " + err.message);
-      }
+      const sec = link.getAttribute("data-section");
+      carregarColecao(sec);
     });
+  });
+</script>
 
-    // 🛍️ Listar produtos
-    async function carregarProdutos() {
-      listaProdutos.innerHTML = "<p>Carregando...</p>";
-      const q = query(collection(db, "produtos"), where("vendedor", "==", userEmail));
-      const snap = await getDocs(q);
-      if (snap.empty) {
-        listaProdutos.innerHTML = "<p class='text-muted'>Nenhum produto cadastrado.</p>";
-        return;
-      }
-      let html = "";
-      snap.forEach(docSnap => {
-        const p = docSnap.data();
-        html += `
-          <div class="card p-3 mb-3">
-            <h5>${p.nome}</h5>
-            <p>${p.descricao}</p>
-            <p><strong>${p.preco} KZ</strong></p>
-            ${p.arquivoURL ? `<img src="${p.arquivoURL}" width="120" class="rounded">` : ""}
-          </div>`;
-      });
-      listaProdutos.innerHTML = html;
-    }
-
-    // 📊 Vendas
-    async function carregarVendas() {
-      vendasList.innerHTML = "<p>Carregando...</p>";
-      const q = query(collection(db, "vendas"), where("vendedor", "==", userEmail));
-      const snap = await getDocs(q);
-      if (snap.empty) {
-        vendasList.innerHTML = "<p class='text-muted'>Nenhuma venda realizada ainda.</p>";
-        return;
-      }
-      let html = "<ul class='list-group'>";
-      snap.forEach(docSnap => {
-        const v = docSnap.data();
-        html += `<li class='list-group-item bg-dark text-light'>
-                  Produto: ${v.produto} — Valor: ${v.valor} KZ — Data: ${new Date(v.data.seconds*1000).toLocaleDateString()}
-                </li>`;
-      });
-      html += "</ul>";
-      vendasList.innerHTML = html;
-    }
-  </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-  </html>
+    </html>
