@@ -1,149 +1,100 @@
 <!DOCTYPE html>
-<html lang="pt-AO">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>⚜️ ELO Commerce</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <title>ELO Commerce</title>
+  <link rel="icon" href="favicon.ico" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <style>
     body {
-      background-color: #000;
-      color: #fff;
-      font-family: "Poppins", sans-serif;
+      background: linear-gradient(180deg, #000000, #2E1A00);
+      color: white;
+      font-family: 'Poppins', sans-serif;
     }
     header {
-      background: linear-gradient(90deg, #b8860b, #000);
-      text-align: center;
-      padding: 20px;
+      background: linear-gradient(90deg, #D4AF37, #2E1A00);
     }
-    header h1 {
-      font-weight: 700;
-      color: #fff;
+    .gold-text {
+      color: #FFD700;
     }
-    header p {
-      color: #ffeb99;
-    }
-    nav {
+    .product-card {
       background-color: #111;
-      text-align: center;
-      padding: 10px 0;
-    }
-    nav a {
-      color: #ffcc00;
-      text-decoration: none;
-      margin: 0 15px;
-      font-weight: 600;
-      transition: 0.3s;
-    }
-    nav a:hover {
-      color: #fff;
-    }
-    .produto-card {
-      background-color: #111;
-      border: 1px solid #222;
-      border-radius: 12px;
+      border-radius: 15px;
       padding: 15px;
-      text-align: center;
-      margin-bottom: 20px;
-      transition: 0.3s;
+      transition: transform 0.2s;
     }
-    .produto-card:hover {
+    .product-card:hover {
       transform: scale(1.03);
-      border-color: #b8860b;
-    }
-    .produto-card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-    .btn-comprar {
-      background-color: #b8860b;
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 8px 16px;
-      margin-top: 10px;
-    }
-    .btn-comprar:hover {
-      background-color: #ffcc00;
-      color: #000;
     }
     footer {
+      background-color: #111;
       text-align: center;
-      padding: 20px;
-      border-top: 1px solid #222;
-      color: #aaa;
+      padding: 10px;
+      color: #ccc;
       font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>⚜️ ELO Commerce</h1>
-    <p>Conectando Criadores e Compradores com Tecnologia</p>
+  <header class="p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold"><span class="gold-text">⚜️ ELO</span> Commerce</h1>
+    <nav class="space-x-4 text-lg">
+      <a href="index.html" class="text-yellow-400 hover:underline">🏠 Início</a>
+      <a href="loja.html" class="text-yellow-400 hover:underline">🛍️ Loja</a>
+      <a href="criar.html" class="text-yellow-400 hover:underline">📝 Criar Conta</a>
+      <a href="login.html" class="text-yellow-400 hover:underline">🔐 Login</a>
+    </nav>
   </header>
 
-  <nav>
-    <a href="index.html">🏠 Início</a>
-    <a href="loja.html">🛍️ Loja</a>
-    <a href="cadastro.html">📝 Criar Conta</a>
-    <a href="login.html">🔐 Login</a>
-  </nav>
+  <main class="text-center py-16">
+    <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Conectando empreendedores africanos ao mercado global</h2>
+    <p class="text-lg mb-6 text-gray-300">Crie, venda e cresça com o ELO Commerce — a plataforma feita para o sucesso digital africano.</p>
+    <a href="planos.html" class="bg-yellow-500 text-black px-6 py-3 rounded-full font-semibold hover:bg-yellow-400 transition">Ver Planos</a>
+  </main>
 
-  <div class="container mt-5">
-    <h2 class="text-warning text-center mb-4">Produtos em Destaque</h2>
-    <div id="lista-produtos" class="row"></div>
-  </div>
+  <section class="p-8">
+    <h3 class="text-3xl font-bold text-center mb-6 text-yellow-400">🛍️ Produtos em Destaque</h3>
+    <div id="produtos" class="grid grid-cols-1 md:grid-cols-3 gap-6 justify-center"></div>
+  </section>
 
   <footer>
-    <p>© 2025 ELO Commerce - Todos os direitos reservados.</p>
+    <p>© 2025 ELO Commerce — Todos os direitos reservados</p>
   </footer>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
+  <script>
     const firebaseConfig = {
-      apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-      authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-      projectId: "elo-ecommerce-ecd87",
-      storageBucket: "elo-ecommerce-ecd87.appspot.com",
-      messagingSenderId: "375574231770",
-      appId: "1:375574231770:web:78279cb6aac72c454703e3"
+      apiKey: "SUA_API_KEY_AQUI",
+      authDomain: "SEU_DOMINIO.firebaseapp.com",
+      projectId: "SEU_PROJETO_ID",
+      storageBucket: "SEU_BUCKET.appspot.com",
+      messagingSenderId: "SEU_ID",
+      appId: "SEU_APP_ID"
     };
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const produtosContainer = document.getElementById("produtos");
 
-    const lista = document.getElementById("lista-produtos");
-
-    async function carregarProdutos() {
-      const snap = await getDocs(collection(db, "produtos"));
-      if (snap.empty) {
-        lista.innerHTML = `<p class="text-center text-muted">Nenhum produto encontrado.</p>`;
-        return;
-      }
-
-      snap.forEach(doc => {
-        const p = doc.data();
-        const card = `
-          <div class="col-md-4">
-            <div class="produto-card">
-              <img src="${p.imagem || 'https://via.placeholder.com/300x180?text=Sem+Imagem'}" alt="${p.nome}">
-              <h5 class="mt-2 text-warning">${p.nome}</h5>
-              <p>${p.descricao || "Produto disponível."}</p>
-              <strong>${p.preco || "0"} AOA</strong><br>
-              <a href="loja.html" class="btn btn-comprar">Comprar</a>
-            </div>
-          </div>
+    db.collection("produtos").limit(6).get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const produto = doc.data();
+        const div = document.createElement("div");
+        div.className = "product-card text-center";
+        div.innerHTML = `
+          <img src="${produto.imagem || 'https://via.placeholder.com/200'}" alt="${produto.nome}" class="mx-auto mb-3 rounded-md w-full h-48 object-cover">
+          <h4 class="text-xl font-bold mb-1">${produto.nome}</h4>
+          <p class="text-gray-300 mb-2">${produto.descricao || 'Sem descrição.'}</p>
+          <p class="text-yellow-400 font-semibold mb-3">${produto.preco || 'Preço não disponível'} AOA</p>
+          <button class="bg-yellow-500 text-black px-4 py-2 rounded-full hover:bg-yellow-400 transition">Comprar</button>
         `;
-        lista.innerHTML += card;
+        produtosContainer.appendChild(div);
       });
-    }
-
-    carregarProdutos();
+    }).catch(err => {
+      produtosContainer.innerHTML = `<p class="text-center text-gray-400">Erro ao carregar produtos: ${err.message}</p>`;
+    });
   </script>
 </body>
-  </html>
+</html>
