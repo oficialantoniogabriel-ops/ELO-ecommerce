@@ -3,169 +3,148 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>⚜️ Painel do Criador - ELO Commerce</title>
+  <title>Painel - ELO Commerce</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
   <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: "Poppins", sans-serif;
-    }
-    .navbar {
-      background: linear-gradient(90deg, #b8860b, #000);
-    }
-    .navbar-brand {
-      font-weight: 700;
-      color: #fff !important;
-    }
-    .sidebar {
-      position: fixed;
-      top: 56px;
-      left: 0;
-      width: 220px;
-      height: 100%;
-      background-color: #111;
-      border-right: 1px solid #222;
-      padding-top: 20px;
-    }
-    .sidebar a {
-      display: block;
-      padding: 10px 20px;
-      color: #ffcc00;
-      text-decoration: none;
-      transition: 0.3s;
-    }
-    .sidebar a:hover {
-      background-color: #b8860b;
-      color: #000;
-    }
-    .content {
-      margin-left: 230px;
-      padding: 30px;
-    }
-    table {
-      width: 100%;
-      color: #fff;
-    }
-    table th {
-      color: #ffcc00;
-    }
-    .btn-gold {
-      background-color: #b8860b;
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 8px 16px;
-    }
-    .btn-gold:hover {
-      background-color: #ffcc00;
-      color: #000;
-    }
+    body { background:#000; color:#fff; font-family:"Poppins",sans-serif; }
+    .navbar{ background:linear-gradient(90deg,#b8860b 0%,#000 100%); }
+    .navbar-brand{ color:#fff!important; font-weight:bold; }
+    .card{ background:#111; border:1px solid #222; border-radius:10px; }
+    .card h5{ color:#ffcc00; }
+    .btn-gold{ background-color:#b8860b; color:#fff; border:none; border-radius:25px; padding:10px 24px; font-weight:600; transition:.3s; }
+    .btn-gold:hover{ background:#ffcc00; color:#000; }
+    table{ color:#fff; }
+    table th{ color:#ffcc00; }
+    .paypal-button-container{ margin-top:15px; }
   </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-dark fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand">⚜️ Painel do Criador</a>
-      <button id="logoutBtn" class="btn btn-outline-light">Sair</button>
-    </div>
-  </nav>
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand">⚜️ Painel ELO Commerce</a>
+    <button id="logoutBtn" class="btn btn-outline-light ms-auto">Sair</button>
+  </div>
+</nav>
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <a href="#" data-section="usuarios">👥 Usuários</a>
-    <a href="#" data-section="produtos">🛍️ Produtos</a>
-    <a href="#" data-section="afiliados">🤝 Afiliados</a>
-    <a href="#" data-section="saques">💰 Saques</a>
-    <a href="#" data-section="planos">📦 Planos</a>
-    <a href="#" data-section="leads">📩 Leads</a>
-    <a href="#" data-section="vendas">💸 Vendas</a>
+<div class="container mt-5 pt-5">
+  <h2 class="text-warning mb-4 text-center">Bem-vindo à sua Conta ELO</h2>
+
+  <!-- Carteira -->
+  <div class="card mb-4 p-3">
+    <h5>💰 Carteira</h5>
+    <p><strong>Saldo:</strong> <span id="saldo">Carregando...</span></p>
+    <p><strong>Assinatura:</strong> <span id="assinatura">Carregando...</span></p>
+    <div id="paypal-button-container" class="paypal-button-container"></div>
   </div>
 
-  <!-- Conteúdo -->
-  <div class="content">
-    <h2 class="text-warning mb-4">📊 Visão Geral do Sistema</h2>
-    <div id="conteudo">
-      <p>Selecione uma categoria na barra lateral para visualizar os dados do sistema.</p>
-    </div>
+  <!-- Produtos -->
+  <div class="card mb-4 p-3">
+    <h5>🛍️ Seus Produtos</h5>
+    <table class="table table-dark table-striped" id="tabelaProdutos">
+      <thead><tr><th>Nome</th><th>Preço</th><th>Status</th></tr></thead>
+      <tbody><tr><td colspan="3">Carregando...</td></tr></tbody>
+    </table>
   </div>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  <!-- Afiliados -->
+  <div class="card mb-4 p-3">
+    <h5>🤝 Programa de Afiliados</h5>
+    <p>Seu link: <span id="linkAfiliado" class="text-warning"></span></p>
+  </div>
 
-    // 🔑 CONFIG FIREBASE
-    const firebaseConfig = {
-      apiKey: "COLE_AQUI",
-      authDomain: "COLE_AQUI",
-      projectId: "COLE_AQUI",
-      storageBucket: "COLE_AQUI",
-      messagingSenderId: "COLE_AQUI",
-      appId: "COLE_AQUI"
-    };
+  <!-- Histórico -->
+  <div class="card mb-4 p-3">
+    <h5>📊 Transações</h5>
+    <table class="table table-dark table-striped" id="tabelaTransacoes">
+      <thead><tr><th>Data</th><th>Tipo</th><th>Valor</th></tr></thead>
+      <tbody><tr><td colspan="3">Carregando...</td></tr></tbody>
+    </table>
+  </div>
+</div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+<footer class="text-center mt-4 py-3 bg-black text-secondary">
+  &copy; 2025 ELO Commerce. Todos os direitos reservados.
+</footer>
 
-    const conteudo = document.getElementById("conteudo");
-    const logoutBtn = document.getElementById("logoutBtn");
+<!-- Firebase e PayPal -->
+<script src="https://www.paypal.com/sdk/js?client-id=AHAC826M72KA6&currency=USD"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // 🔐 Verificação de acesso
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "login.html";
-      } else if (user.email !== "oficialantoniogabriel@gmail.com") {
-        alert("Acesso restrito. Esta página é apenas para o criador do sistema.");
-        signOut(auth);
-        window.location.href = "loja.html";
-      }
-    });
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.appspot.com",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
 
-    logoutBtn.addEventListener("click", async () => {
-      await signOut(auth);
-      window.location.href = "login.html";
-    });
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // 🔹 Função para carregar coleções
-    async function carregarColecao(nome) {
-      conteudo.innerHTML = `<p class='text-warning'>Carregando ${nome}...</p>`;
-      try {
-        const snap = await getDocs(collection(db, nome));
-        if (snap.empty) {
-          conteudo.innerHTML = `<p class='text-muted'>Nenhum dado encontrado em "${nome}".</p>`;
-          return;
-        }
-        let html = `<table class="table table-dark table-striped"><thead><tr>`;
-        const firstDoc = snap.docs[0].data();
-        Object.keys(firstDoc).forEach((k) => (html += `<th>${k}</th>`));
-        html += "</tr></thead><tbody>";
-        snap.forEach((docSnap) => {
-          const d = docSnap.data();
-          html += "<tr>";
-          Object.keys(firstDoc).forEach((k) => (html += `<td>${d[k] ?? "-"}</td>`));
-          html += "</tr>";
-        });
-        html += "</tbody></table>";
-        conteudo.innerHTML = html;
-      } catch (e) {
-        conteudo.innerHTML = `<p class='text-danger'>Erro ao carregar ${nome}: ${e.message}</p>`;
-      }
+  const logoutBtn = document.getElementById("logoutBtn");
+  const saldoEl = document.getElementById("saldo");
+  const assinaturaEl = document.getElementById("assinatura");
+  const linkAfiliadoEl = document.getElementById("linkAfiliado");
+  const tabelaProdutos = document.getElementById("tabelaProdutos").querySelector("tbody");
+  const tabelaTransacoes = document.getElementById("tabelaTransacoes").querySelector("tbody");
+
+  logoutBtn.addEventListener("click", async()=>{ await signOut(auth); window.location.href="login.html"; });
+
+  onAuthStateChanged(auth, async (user)=>{
+    if(!user){ window.location.href="login.html"; return; }
+    const email=user.email;
+    linkAfiliadoEl.textContent=`https://elo-commerce.com/?ref=${email}`;
+    
+    // Saldo e assinatura
+    const carteiraSnap=await getDoc(doc(db,"carteira",email));
+    if(carteiraSnap.exists()){
+      const data=carteiraSnap.data();
+      saldoEl.textContent=data.saldo?.toFixed(2)+" USD"||"0.00 USD";
+      assinaturaEl.textContent=data.plano||"Gratuito";
+    } else {
+      saldoEl.textContent="0.00 USD";
+      assinaturaEl.textContent="Gratuito";
     }
 
-    // 🔸 Menu lateral
-    document.querySelectorAll(".sidebar a").forEach((link) => {
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        const sec = link.getAttribute("data-section");
-        carregarColecao(sec);
-      });
+    // Produtos
+    const produtosSnap=await getDocs(collection(db,"produtos"));
+    let produtosHTML="";
+    produtosSnap.forEach(p=>{
+      const d=p.data();
+      if(d.vendedor===email)
+        produtosHTML+=`<tr><td>${d.nome}</td><td>${d.preco} USD</td><td>${d.status||"Ativo"}</td></tr>`;
     });
-  </script>
+    tabelaProdutos.innerHTML=produtosHTML||"<tr><td colspan='3'>Nenhum produto.</td></tr>";
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    // Transações
+    const transSnap=await getDocs(collection(db,"vendas"));
+    let transHTML="";
+    transSnap.forEach(t=>{
+      const d=t.data();
+      if(d.comprador===email||d.vendedor===email)
+        transHTML+=`<tr><td>${new Date(d.data.seconds*1000).toLocaleDateString()}</td><td>${d.tipo}</td><td>${d.valor} USD</td></tr>`;
+    });
+    tabelaTransacoes.innerHTML=transHTML||"<tr><td colspan='3'>Nenhuma transação.</td></tr>";
+  });
+
+  // PayPal
+  paypal.Buttons({
+    createSubscription: (data, actions)=>actions.subscription.create({
+      plan_id:"P-3M10USD-ELO"
+    }),
+    onApprove: async (data)=>{
+      alert("✅ Assinatura confirmada!");
+      const user=auth.currentUser;
+      if(user){
+        await setDoc(doc(db,"carteira",user.email),{plano:"Premium",saldo:0,data:new Date()});
+      }
+    }
+  }).render("#paypal-button-container");
+</script>
 </body>
-  </html>
+    </html>
