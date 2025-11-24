@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Entrar - ELO Commerce</title>
+  <title>Login - ELO Commerce</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
@@ -15,76 +15,61 @@
       max-width: 400px;
       margin-top: 100px;
       background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
       padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-    }
-    h2 {
-      color: #ffcc00;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .form-control {
-      background: #222;
-      color: #fff;
-      border: 1px solid #333;
-    }
-    .form-control:focus {
-      border-color: #b8860b;
-      background: #1a1a1a;
-      color: #fff;
-      box-shadow: none;
+      box-shadow: 0 0 15px rgba(255,215,0,0.1);
     }
     .btn-gold {
       background-color: #b8860b;
       color: #fff;
       border: none;
       border-radius: 25px;
-      padding: 10px;
-      width: 100%;
-      transition: 0.3s;
+      padding: 10px 24px;
       font-weight: 600;
+      transition: 0.3s;
     }
     .btn-gold:hover {
       background-color: #ffcc00;
       color: #000;
+      transform: scale(1.05);
     }
-    .text-center a {
+    a {
       color: #ffcc00;
       text-decoration: none;
     }
-    .text-center a:hover {
+    a:hover {
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h2>🔐 Entrar</h2>
+<div class="container text-center">
+  <h2 class="text-warning mb-4">Fazer Login</h2>
+
   <form id="loginForm">
-    <div class="mb-3">
+    <div class="mb-3 text-start">
       <label class="form-label">Email</label>
-      <input type="email" id="email" class="form-control" required placeholder="Digite seu email">
+      <input type="email" id="email" class="form-control" required>
     </div>
-    <div class="mb-3">
+    <div class="mb-3 text-start">
       <label class="form-label">Senha</label>
-      <input type="password" id="senha" class="form-control" required placeholder="Digite sua senha">
+      <input type="password" id="senha" class="form-control" required>
     </div>
-    <button type="submit" class="btn-gold">Entrar</button>
+    <button type="submit" class="btn-gold w-100 mt-3">Entrar</button>
   </form>
 
-  <div class="text-center mt-3">
-    <p>Não tem conta? <a href="criar.html">Criar agora</a></p>
-  </div>
+  <p class="mt-3 text-secondary">Não tem conta? 
+    <a href="criar.html">Criar conta</a>
+  </p>
 </div>
 
+<!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } 
-    from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-  // 🔹 Configuração do Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
     authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
@@ -97,41 +82,116 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  const form = document.getElementById("loginForm");
-
-  // 🔐 Verifica login existente
-  onAuthStateChanged(auth, user => {
-    if (user) {
-      redirecionar(user.email);
-    }
-  });
-
-  // 🚀 Login
-  form.addEventListener("submit", async e => {
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = document.getElementById("email").value.trim();
+    const email = document.getElementById("email").value;
     const senha = document.getElementById("senha").value;
-
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, senha);
-      const user = userCredential.user;
-      redirecionar(user.email);
-    } catch (error) {
-      alert("Erro ao entrar: " + error.message);
+      await signInWithEmailAndPassword(auth, email, senha);
+      window.location.href = "painel.html"; // Redireciona ao painel
+    } catch (err) {
+      alert("Erro ao entrar: " + err.message);
     }
   });
-
-  // 🔄 Função de redirecionamento
-  function redirecionar(email) {
-    const emailCriador = "oficialantoniogabriel@gmail.com";
-    if (email === emailCriador) {
-      window.location.href = "admin.html"; // Painel do criador
-    } else {
-      window.location.href = "painel.html"; // Painel normal do usuário
-    }
-  }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-    </html>
+</html><!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+    }
+    .container {
+      max-width: 400px;
+      margin-top: 100px;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(255,215,0,0.1);
+    }
+    .btn-gold {
+      background-color: #b8860b;
+      color: #fff;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 24px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .btn-gold:hover {
+      background-color: #ffcc00;
+      color: #000;
+      transform: scale(1.05);
+    }
+    a {
+      color: #ffcc00;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container text-center">
+  <h2 class="text-warning mb-4">Fazer Login</h2>
+
+  <form id="loginForm">
+    <div class="mb-3 text-start">
+      <label class="form-label">Email</label>
+      <input type="email" id="email" class="form-control" required>
+    </div>
+    <div class="mb-3 text-start">
+      <label class="form-label">Senha</label>
+      <input type="password" id="senha" class="form-control" required>
+    </div>
+    <button type="submit" class="btn-gold w-100 mt-3">Entrar</button>
+  </form>
+
+  <p class="mt-3 text-secondary">Não tem conta? 
+    <a href="criar.html">Criar conta</a>
+  </p>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.appspot.com",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    try {
+      await signInWithEmailAndPassword(auth, email, senha);
+      window.location.href = "painel.html"; // Redireciona ao painel
+    } catch (err) {
+      alert("Erro ao entrar: " + err.message);
+    }
+  });
+</script>
+
+</body>
+</html>
