@@ -1,80 +1,184 @@
 <!DOCTYPE html>
 <html lang="pt-AO">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Afiliados - ELO Commerce</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Afiliado - ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { background:#000; color:#fff; font-family:'Poppins',sans-serif; }
-    .navbar { background:linear-gradient(90deg,#b8860b 0%,#000 100%); }
-    .navbar-brand { color:#fff!important; font-weight:700; }
-    .card { background-color:#111; border:1px solid #222; border-radius:12px; color:#fff; }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
+    }
+    .navbar-brand {
+      font-weight: bold;
+      color: #fff !important;
+    }
+    .container {
+      max-width: 900px;
+      margin-top: 80px;
+    }
+    .card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 15px;
+      color: #fff;
+    }
+    .text-gold {
+      color: #ffcc00;
+    }
+    .btn-gold {
+      background-color: #b8860b;
+      color: #fff;
+      border-radius: 25px;
+      border: none;
+      padding: 10px 20px;
+      transition: 0.3s;
+    }
+    .btn-gold:hover {
+      background-color: #ffcc00;
+      color: #000;
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body>
-<nav class="navbar navbar-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="painel.html">⚜️ ELO Commerce</a>
+  <nav class="navbar fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand">🤝 Painel do Afiliado</a>
+      <button id="logoutBtn" class="btn btn-outline-light">Sair</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2 class="text-center text-gold mb-4">Seja bem-vindo ao Programa de Afiliados</h2>
+
+    <div class="card p-4 mb-4">
+      <h4 class="text-gold">💼 Resumo Financeiro</h4>
+      <p><strong>Saldo atual:</strong> <span id="saldo">0 USD</span></p>
+      <p><strong>Total de ganhos:</strong> <span id="ganhos">0 USD</span></p>
+      <p><strong>Total de vendas:</strong> <span id="vendas">0</span></p>
+      <button id="btnSaque" class="btn-gold mt-2">💰 Solicitar saque</button>
+    </div>
+
+    <div class="card p-4 mb-4">
+      <h4 class="text-gold">🔗 Seu link de afiliado</h4>
+      <input id="linkAfiliado" type="text" readonly class="form-control bg-dark text-light border-0" />
+      <button id="copiarLink" class="btn-gold mt-2">📋 Copiar link</button>
+    </div>
+
+    <div class="card p-4">
+      <h4 class="text-gold">📊 Desempenho</h4>
+      <canvas id="grafico"></canvas>
+    </div>
   </div>
-</nav>
 
-<div class="container mt-5">
-  <h3 class="text-warning">Programa de Afiliados</h3>
-  <p>Compartilhe seu link e ganhe 10% de comissão por cada venda concluída!</p>
-  <div class="card p-3 mb-4">
-    <p>Seu link:</p>
-    <input type="text" id="link" class="form-control text-center" readonly>
-    <button class="btn btn-warning mt-2" id="copiar">Copiar Link</button>
-  </div>
-  <h5 class="text-warning">Estatísticas</h5>
-  <div id="stats">Carregando...</div>
-</div>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+      authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+      projectId: "elo-ecommerce-ecd87",
+      storageBucket: "elo-ecommerce-ecd87.appspot.com",
+      messagingSenderId: "375574231770",
+      appId: "1:375574231770:web:78279cb6aac72c454703e3"
+    };
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-  authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-  projectId: "elo-ecommerce-ecd87",
-  storageBucket: "elo-ecommerce-ecd87.appspot.com",
-  messagingSenderId: "375574231770",
-  appId: "1:375574231770:web:78279cb6aac72c454703e3"
-};
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+    const saldoEl = document.getElementById("saldo");
+    const ganhosEl = document.getElementById("ganhos");
+    const vendasEl = document.getElementById("vendas");
+    const linkEl = document.getElementById("linkAfiliado");
 
-onAuthStateChanged(auth, async user=>{
-  if(!user){window.location="login.html";return;}
-  const email=user.email;
-  const refLink=`https://elo-commerce.com/?ref=${encodeURIComponent(email)}`;
-  document.getElementById("link").value=refLink;
+    let userEmail = "";
 
-  const clicksQ=query(collection(db,"referencias"),where("emailAfiliado","==",email));
-  const vendasQ=query(collection(db,"vendas"),where("afiliado","==",email));
-  const clicksSnap=await getDocs(clicksQ);
-  const vendasSnap=await getDocs(vendasQ);
-  let totalVendas=0, ganho=0;
-  vendasSnap.forEach(v=>{ totalVendas++; ganho+=v.data().preco*0.10; });
-  document.getElementById("stats").innerHTML=
-  `<div class='card p-3'>
-     <p>Cliques: <b>${clicksSnap.size}</b></p>
-     <p>Vendas: <b>${totalVendas}</b></p>
-     <p>Ganhos: <b>${ganho.toFixed(2)} USD</b></p>
-   </div>`;
-});
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
 
-document.getElementById("copiar").onclick=()=>{
-  const input=document.getElementById("link");
-  input.select();
-  navigator.clipboard.writeText(input.value);
-  alert("Link copiado!");
-};
-</script>
+      userEmail = user.email;
+      const refLink = `https://oficialantoniogabriel-ops.github.io/ELO-ecommerce/index.html?ref=${encodeURIComponent(userEmail)}`;
+      linkEl.value = refLink;
+
+      // Buscar vendas do afiliado
+      const vendasSnap = await getDocs(collection(db, "vendas"));
+      let totalVendas = 0;
+      let totalGanhos = 0;
+      const mensal = {};
+
+      vendasSnap.forEach((venda) => {
+        const d = venda.data();
+        if (d.afiliado === userEmail) {
+          totalVendas++;
+          totalGanhos += d.comissao || 0;
+          const mes = new Date(d.data).toLocaleString("pt-AO", { month: "short" });
+          mensal[mes] = mensal[mes] ? mensal[mes] + (d.comissao || 0) : (d.comissao || 0);
+        }
+      });
+
+      vendasEl.textContent = totalVendas;
+      ganhosEl.textContent = totalGanhos.toFixed(2) + " USD";
+      saldoEl.textContent = (totalGanhos * 0.95).toFixed(2) + " USD"; // aplica taxa de 5%
+
+      // Gráfico
+      const ctx = document.getElementById("grafico");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: Object.keys(mensal),
+          datasets: [
+            {
+              label: "Ganhos (USD)",
+              data: Object.values(mensal),
+              backgroundColor: "#b8860b"
+            }
+          ]
+        },
+        options: {
+          scales: {
+            y: { beginAtZero: true, ticks: { color: "#fff" } },
+            x: { ticks: { color: "#ffcc00" } }
+          },
+          plugins: { legend: { labels: { color: "#fff" } } }
+        }
+      });
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+
+    document.getElementById("copiarLink").addEventListener("click", () => {
+      navigator.clipboard.writeText(linkEl.value);
+      alert("✅ Link de afiliado copiado!");
+    });
+
+    document.getElementById("btnSaque").addEventListener("click", async () => {
+      const valor = parseFloat(prompt("Digite o valor que deseja sacar (mínimo 3 USD):"));
+      if (isNaN(valor) || valor < 3) return alert("❌ Valor inválido ou abaixo do mínimo.");
+      await setDoc(doc(collection(db, "saques")), {
+        afiliado: userEmail,
+        valor,
+        status: "pendente",
+        solicitadoEm: new Date()
+      });
+      alert("✅ Solicitação de saque enviada com sucesso!");
+    });
+  </script>
 </body>
-      </html>
+    </html>
