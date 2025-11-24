@@ -1,181 +1,213 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-AO">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ELO Commerce</title>
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/891/891462.png">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Poppins", sans-serif;
-    }
-
     body {
       background-color: #000;
       color: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: "Poppins", sans-serif;
     }
-
-    header {
-      background: linear-gradient(90deg, #b8860b, #000);
-      color: white;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 1000;
+    .navbar {
+      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
     }
-
-    header h1 {
-      font-size: 1.3rem;
+    .navbar-brand {
+      font-weight: bold;
+      color: #fff !important;
+      font-size: 1.4rem;
+    }
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+    }
+    .hero h1 {
+      color: #ffcc00;
       font-weight: 700;
+      font-size: 2.2rem;
     }
-
-    .menu-toggle {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 28px;
-      cursor: pointer;
-    }
-
-    nav {
-      position: fixed;
-      top: 0;
-      left: -100%;
-      width: 70%;
-      height: 100%;
-      background: linear-gradient(180deg, #b8860b, #000);
-      transition: left 0.3s ease;
-      padding-top: 70px;
-      z-index: 999;
-    }
-
-    nav.active {
-      left: 0;
-    }
-
-    nav ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    nav ul li {
-      margin: 20px 0;
-      text-align: center;
-    }
-
-    nav ul li a {
-      text-decoration: none;
-      color: white;
-      font-weight: 600;
-      font-size: 18px;
-      transition: color 0.3s;
-    }
-
-    nav ul li a:hover {
-      color: #ffcc00;
-    }
-
-    .btn-cadastrar {
-      display: block;
-      background-color: #b8860b;
-      color: #fff;
-      border: none;
-      padding: 12px;
-      width: 80%;
+    .hero p {
+      color: #ddd;
+      max-width: 600px;
       margin: 20px auto;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 16px;
-      text-align: center;
-      cursor: pointer;
-      transition: background 0.3s;
     }
-
-    .btn-cadastrar:hover {
-      background-color: #ffcc00;
-      color: #000;
-    }
-
-    main {
-      margin-top: 100px;
-      text-align: center;
-      padding: 20px;
-    }
-
-    h2 {
-      color: #ffcc00;
-      font-size: 1.8rem;
-      margin-bottom: 15px;
-    }
-
-    p {
-      color: #ccc;
-      font-size: 1rem;
-      margin-bottom: 25px;
-    }
-
-    .btn-planos {
+    .btn-gold {
       background-color: #b8860b;
       color: #fff;
       border: none;
-      padding: 14px 25px;
-      border-radius: 40px;
-      font-size: 16px;
+      border-radius: 25px;
+      padding: 10px 24px;
       font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
+      transition: 0.3s;
     }
-
-    .btn-planos:hover {
+    .btn-gold:hover {
       background-color: #ffcc00;
       color: #000;
+      transform: scale(1.05);
+    }
+    footer {
+      background-color: #111;
+      padding: 15px;
+      text-align: center;
+      color: #777;
+      margin-top: 80px;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>💠 ELO Commerce</h1>
-    <button class="menu-toggle" id="menu-btn">☰</button>
-  </header>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand">⚜️ ELO Commerce</a>
+    <div class="ms-auto">
+      <a href="criar.html" class="btn btn-gold me-2">Criar Conta</a>
+      <a href="login.html" class="btn btn-outline-light">Fazer Login</a>
+    </div>
+  </div>
+</nav>
 
-  <nav id="side-menu">
-    <ul>
-      <li><a href="index.html">🏠 Início</a></li>
-      <li><a href="loja.html">🛍️ Produtos</a></li>
-      <li><a href="planos.html">📦 Planos</a></li>
-      <li><a href="afiliados.html">🤝 Afiliados</a></li>
-      <li><a href="carteira.html">💰 Carteira</a></li>
-      <li><a href="painel.html">📊 Painel</a></li>
-      <li><a href="login.html">🔐 Login</a></li>
-    </ul>
-    <a href="criar.html" class="btn-cadastrar">Cadastrar</a>
-  </nav>
+<!-- Hero -->
+<section class="hero">
+  <h1>Transforme seu negócio com ELO Commerce</h1>
+  <p>Crie sua loja, venda produtos físicos e digitais, ganhe comissões automáticas e gerencie tudo em um só painel.</p>
+  <a href="planos.html" class="btn-gold">Ver Planos</a>
+</section>
 
-  <main>
-    <h2>Conectando empreendedores africanos ao mercado global</h2>
-    <p>Crie, venda e cresça com o <b>ELO Commerce</b> — a plataforma feita para o sucesso digital africano.</p>
-    <a href="planos.html" class="btn-planos">Ver Planos</a>
-  </main>
+<footer>
+  &copy; 2025 ELO Commerce — Todos os direitos reservados.
+</footer>
 
-  <script>
-    const menuBtn = document.getElementById('menu-btn');
-    const sideMenu = document.getElementById('side-menu');
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-    menuBtn.addEventListener('click', () => {
-      sideMenu.classList.toggle('active');
-    });
-  </script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.appspot.com",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // 🔹 Se o usuário já estiver logado, envia direto para o painel
+  onAuthStateChanged(auth, user => {
+    if (user) window.location.href = "painel.html";
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-    </html>
+  </html><!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
+    }
+    .navbar-brand {
+      font-weight: bold;
+      color: #fff !important;
+      font-size: 1.4rem;
+    }
+    .hero {
+      text-align: center;
+      padding: 100px 20px;
+    }
+    .hero h1 {
+      color: #ffcc00;
+      font-weight: 700;
+      font-size: 2.2rem;
+    }
+    .hero p {
+      color: #ddd;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+    .btn-gold {
+      background-color: #b8860b;
+      color: #fff;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 24px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .btn-gold:hover {
+      background-color: #ffcc00;
+      color: #000;
+      transform: scale(1.05);
+    }
+    footer {
+      background-color: #111;
+      padding: 15px;
+      text-align: center;
+      color: #777;
+      margin-top: 80px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand">⚜️ ELO Commerce</a>
+    <div class="ms-auto">
+      <a href="criar.html" class="btn btn-gold me-2">Criar Conta</a>
+      <a href="login.html" class="btn btn-outline-light">Fazer Login</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <h1>Transforme seu negócio com ELO Commerce</h1>
+  <p>Crie sua loja, venda produtos físicos e digitais, ganhe comissões automáticas e gerencie tudo em um só painel.</p>
+  <a href="planos.html" class="btn-gold">Ver Planos</a>
+</section>
+
+<footer>
+  &copy; 2025 ELO Commerce — Todos os direitos reservados.
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.appspot.com",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // 🔹 Se o usuário já estiver logado, envia direto para o painel
+  onAuthStateChanged(auth, user => {
+    if (user) window.location.href = "painel.html";
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+  </html>
