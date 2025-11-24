@@ -3,56 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Usuário - ELO Commerce</title>
+  <title>Painel - ELO Commerce</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {background:#000;color:#fff;font-family:"Poppins",sans-serif;}
-    .navbar{background:linear-gradient(90deg,#b8860b 0%,#000 100%);}
-    .navbar-brand{color:#fff!important;font-weight:700;}
-    .btn-gold{background:#b8860b;color:#fff;border:none;border-radius:20px;padding:8px 16px;transition:.3s;}
-    .btn-gold:hover{background:#ffcc00;color:#000;}
-    .sidebar{position:fixed;top:56px;left:0;width:220px;height:100%;background:#111;border-right:1px solid #222;padding-top:20px;}
-    .sidebar a{display:block;padding:10px 20px;color:#ffcc00;text-decoration:none;transition:.3s;}
-    .sidebar a:hover{background:#b8860b;color:#000;}
-    .content{margin-left:230px;padding:30px;}
-    table{color:#fff;}
-    table th{color:#ffcc00;}
-    .card{background:#111;border:1px solid #222;border-radius:10px;padding:15px;}
+    .navbar {background:linear-gradient(90deg,#b8860b 0%,#000 100%);}
+    .navbar-brand {font-weight:bold;color:#fff!important;}
+    .container {margin-top:100px;}
+    .btn-gold {background-color:#b8860b;color:#fff;border:none;border-radius:25px;padding:10px 20px;font-weight:600;}
+    .btn-gold:hover {background-color:#ffcc00;color:#000;}
+    .card {background:#111;border:1px solid #222;border-radius:10px;}
+    .card h5 {color:#ffcc00;}
+    .form-control {background:#222;border:1px solid #333;color:#fff;}
+    .form-control:focus {border-color:#b8860b;box-shadow:none;}
   </style>
 </head>
 <body>
 
+<!-- Navbar -->
 <nav class="navbar navbar-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand">⚜️ Painel do Usuário</a>
+    <a class="navbar-brand">⚜️ ELO Commerce</a>
     <div>
       <button id="homeBtn" class="btn btn-outline-light me-2">🏠 Início</button>
-      <button id="logoutBtn" class="btn btn-outline-light">Sair</button>
+      <button id="logoutBtn" class="btn btn-outline-danger">Sair</button>
     </div>
   </div>
 </nav>
 
-<div class="sidebar">
-  <a href="#" data-section="perfil">👤 Perfil</a>
-  <a href="#" data-section="produtos">🛍️ Meus Produtos</a>
-  <a href="#" data-section="vendas">💸 Minhas Vendas</a>
-  <a href="#" data-section="carteira">💰 Carteira</a>
-  <a href="#" data-section="afiliados">🤝 Afiliados</a>
-  <a href="#" data-section="planos">📦 Planos</a>
-</div>
+<!-- Conteúdo -->
+<div class="container">
+  <h2 class="text-warning mb-4 text-center">💼 Painel do Usuário</h2>
 
-<div class="content">
-  <h2 class="text-warning mb-4">Bem-vindo ao seu painel</h2>
-  <div id="conteudo">
-    <p>Selecione uma opção na barra lateral.</p>
+  <!-- Saldo -->
+  <div class="card p-3 mb-4">
+    <h5>Carteira</h5>
+    <p>Saldo disponível: <strong id="saldo">0.00 KZ</strong></p>
+    <button id="addFundsBtn" class="btn-gold me-2">➕ Adicionar Fundos</button>
+    <button id="withdrawBtn" class="btn btn-outline-light">💸 Sacar</button>
+  </div>
+
+  <!-- Criar produto -->
+  <div class="card p-3 mb-4">
+    <h5>📦 Criar Novo Produto</h5>
+    <form id="produtoForm">
+      <input type="text" class="form-control mb-2" id="nomeProduto" placeholder="Nome do produto" required>
+      <textarea class="form-control mb-2" id="descricaoProduto" placeholder="Descrição do produto"></textarea>
+      <input type="number" class="form-control mb-2" id="precoProduto" placeholder="Preço (KZ)" required>
+      <input type="file" class="form-control mb-2" id="arquivoProduto" accept="image/*,video/*">
+      <button type="submit" class="btn-gold w-100">Salvar Produto</button>
+    </form>
+  </div>
+
+  <!-- Lista de produtos -->
+  <div class="card p-3 mb-4">
+    <h5>🛍️ Meus Produtos</h5>
+    <div id="listaProdutos" class="mt-3"></div>
   </div>
 </div>
 
-<!-- Firebase -->
+<footer class="text-center mt-5 py-3 bg-black text-secondary">
+  &copy; 2025 ELO Commerce. Todos os direitos reservados.
+</footer>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
 
   const firebaseConfig = {
@@ -68,208 +85,174 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
   const storage = getStorage(app);
-  const conteudo = document.getElementById("conteudo");
 
-  // Autenticação
+  const saldoEl = document.getElementById("saldo");
+  const produtoForm = document.getElementById("produtoForm");
+  const listaProdutos = document.getElementById("listaProdutos");
+
+  let userEmail = "";
+
+  // 🔹 Verifica login
   onAuthStateChanged(auth, async (user) => {
-    if (!user) window.location.href = "login.html";
-    else carregarPerfil(user.email);
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+    userEmail = user.email;
+    await carregarCarteira();
+    await carregarProdutos();
   });
 
-  document.getElementById("logoutBtn").addEventListener("click", async ()=>{
+  // 🔹 Botão sair
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
     await signOut(auth);
-    window.location.href = "login.html";
-  });
-  document.getElementById("homeBtn").addEventListener("click", ()=> window.location.href="index.html");
-
-  // Seções
-  document.querySelectorAll(".sidebar a").forEach(link=>{
-    link.addEventListener("click", e=>{
-      e.preventDefault();
-      const sec = link.getAttribute("data-section");
-      if(sec==="perfil") mostrarPerfil();
-      if(sec==="produtos") mostrarProdutos();
-      if(sec==="vendas") mostrarVendas();
-      if(sec==="carteira") mostrarCarteira();
-      if(sec==="afiliados") mostrarAfiliados();
-      if(sec==="planos") mostrarPlanos();
-    });
+    window.location.href = "index.html";
   });
 
-  // ---------------- SEÇÃO PERFIL ----------------
-  async function carregarPerfil(email){
-    const snap = await getDoc(doc(db,"usuarios",email));
-    if(snap.exists()){
-      const d = snap.data();
-      conteudo.innerHTML = `
-        <div class='card text-center'>
-          <img src='${d.foto || "https://via.placeholder.com/100"}' class='rounded-circle mb-3' width='100'>
-          <h4>${d.nome || "Usuário"}</h4>
-          <p>${d.bio || ""}</p>
-          <input type='file' id='fotoInput' class='form-control mb-2' accept='image/*'>
-          <textarea id='bioInput' class='form-control mb-2' placeholder='Sua bio...'>${d.bio||""}</textarea>
-          <button class='btn-gold' id='salvarPerfil'>Salvar</button>
+  // 🔹 Voltar ao início
+  document.getElementById("homeBtn").addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
+
+  // 🔹 Carregar carteira
+  async function carregarCarteira() {
+    const refDoc = doc(db, "usuarios", userEmail);
+    const snap = await getDoc(refDoc);
+    if (snap.exists()) {
+      const data = snap.data();
+      saldoEl.textContent = `${(data.saldo ?? 0).toFixed(2)} KZ`;
+    } else {
+      await setDoc(refDoc, { email: userEmail, saldo: 0 });
+    }
+  }
+
+  // 🔹 Criar produto
+  produtoForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nome = document.getElementById("nomeProduto").value;
+    const descricao = document.getElementById("descricaoProduto").value;
+    const preco = parseFloat(document.getElementById("precoProduto").value);
+    const arquivo = document.getElementById("arquivoProduto").files[0];
+    let arquivoURL = "";
+
+    try {
+      if (arquivo) {
+        const fileRef = ref(storage, "produtos/" + userEmail + "/" + arquivo.name);
+        await uploadBytes(fileRef, arquivo);
+        arquivoURL = await getDownloadURL(fileRef);
+      }
+
+      await addDoc(collection(db, "produtos"), {
+        nome, descricao, preco, arquivoURL,
+        vendedor: userEmail,
+        criadoEm: new Date()
+      });
+
+      alert("✅ Produto salvo com sucesso!");
+      produtoForm.reset();
+      carregarProdutos();
+    } catch (err) {
+      alert("Erro ao salvar: " + err.message);
+    }
+  });
+
+  // 🔹 Carregar produtos do usuário
+  async function carregarProdutos() {
+    listaProdutos.innerHTML = "<p>Carregando...</p>";
+    const q = query(collection(db, "produtos"), where("vendedor", "==", userEmail));
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      listaProdutos.innerHTML = "<p class='text-muted'>Nenhum produto cadastrado.</p>";
+      return;
+    }
+    let html = "";
+    snap.forEach(docSnap => {
+      const p = docSnap.data();
+      html += `
+        <div class="border p-3 mb-3 rounded">
+          <h6>${p.nome}</h6>
+          <p>${p.descricao ?? ""}</p>
+          <p><strong>${p.preco} KZ</strong></p>
+          ${p.arquivoURL ? `<img src="${p.arquivoURL}" width="120" class="rounded">` : ""}
         </div>`;
-      document.getElementById("salvarPerfil").onclick = ()=>salvarPerfil(email);
-    }
-  }
-
-  async function salvarPerfil(email){
-    const file = document.getElementById("fotoInput").files[0];
-    const bio = document.getElementById("bioInput").value;
-    let fotoURL="";
-    if(file){
-      const fileRef = ref(storage, "usuarios/"+email+".jpg");
-      await uploadBytes(fileRef,file);
-      fotoURL = await getDownloadURL(fileRef);
-    }
-    await updateDoc(doc(db,"usuarios",email),{bio:bio,foto:fotoURL});
-    alert("Perfil atualizado!");
-  }
-
-  // ---------------- SEÇÃO PRODUTOS ----------------
-  async function mostrarProdutos(){
-    conteudo.innerHTML = `
-      <div class='card'>
-        <h4 class='text-warning mb-3'>Adicionar Produto</h4>
-        <input id='nomeProd' class='form-control mb-2' placeholder='Nome do produto'>
-        <textarea id='descProd' class='form-control mb-2' placeholder='Descrição'></textarea>
-        <input id='precoProd' class='form-control mb-2' placeholder='Preço (Kz ou USD)'>
-        <select id='tipoProd' class='form-control mb-2'>
-          <option value='fisico'>Físico</option>
-          <option value='digital'>Digital</option>
-        </select>
-        <input type='file' id='fotoProd' accept='image/*,video/*' class='form-control mb-2'>
-        <button class='btn-gold' id='btnSalvarProd'>Salvar Produto</button>
-      </div>`;
-    document.getElementById("btnSalvarProd").onclick = salvarProduto;
-  }
-
-  async function salvarProduto(){
-    const user = auth.currentUser;
-    const nome = nomeProd.value, desc = descProd.value, preco = precoProd.value, tipo = tipoProd.value;
-    const file = fotoProd.files[0];
-    let midiaURL="";
-    if(file){
-      const fileRef = ref(storage, "produtos/"+user.uid+"/"+file.name);
-      await uploadBytes(fileRef,file);
-      midiaURL = await getDownloadURL(fileRef);
-    }
-    await addDoc(collection(db,"produtos"),{
-      vendedor:user.email, nome, desc, preco, tipo, midia:midiaURL, criadoEm:new Date()
     });
-    alert("Produto adicionado!");
-  }
-
-  // ---------------- SEÇÃO VENDAS ----------------
-  async function mostrarVendas(){
-    conteudo.innerHTML="<p class='text-warning'>Carregando vendas...</p>";
-    const snap = await getDocs(collection(db,"vendas"));
-    if(snap.empty){conteudo.innerHTML="<p>Nenhuma venda registrada.</p>";return;}
-    let html="<table class='table'><thead><tr><th>Produto</th><th>Comprador</th><th>Valor</th></tr></thead><tbody>";
-    snap.forEach(d=>{const v=d.data();html+=`<tr><td>${v.produto}</td><td>${v.comprador}</td><td>${v.valor}</td></tr>`});
-    conteudo.innerHTML=html+"</tbody></table>";
-  }
-
-  // ---------------- SEÇÃO CARTEIRA ----------------
-  async function mostrarCarteira(){
-    conteudo.innerHTML=`
-      <div class='card text-center'>
-        <h4 class='text-warning'>Carteira</h4>
-        <p>Saldo: <strong id='saldoValor'>Carregando...</strong></p>
-        <button class='btn-gold mb-2' id='addFunds'>Adicionar Fundos</button>
-        <button class='btn-gold mb-2' id='sacar'>Sacar</button>
-      </div>`;
-    document.getElementById("addFunds").onclick=()=>alert("Função PayPal em implementação real.");
-    document.getElementById("sacar").onclick=()=>alert("Saque solicitado!");
-  }
-
-  // ---------------- SEÇÃO AFILIADOS ----------------
-  async function mostrarAfiliados(){
-    const user=auth.currentUser;
-    conteudo.innerHTML=`
-      <div class='card text-center'>
-        <h4 class='text-warning'>Programa de Afiliados</h4>
-        <p>Compartilhe seu link e ganhe 10% por venda.</p>
-        <p><input class='form-control' readonly value='https://elo-commerce.com/?ref=${user.email}'></p>
-      </div>`;
-  }
-
-  // ---------------- SEÇÃO PLANOS ----------------
-  async function mostrarPlanos(){
-    conteudo.innerHTML=`
-      <div class='text-center'>
-        <h3 class='text-warning mb-3'>Assine o Plano Premium</h3>
-        <p>Tenha loja ilimitada e destaque automático por apenas <strong>10 USD/mês</strong>.</p>
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-          <input type="hidden" name="cmd" value="_xclick">
-          <input type="hidden" name="business" value="oficialelo270@gmail.com">
-          <input type="hidden" name="item_name" value="Plano Premium ELO Commerce">
-          <input type="hidden" name="currency_code" value="USD">
-          <input type="hidden" name="amount" value="10.00">
-          <button class='btn-gold'>Assinar via PayPal</button>
-        </form>
-      </div>`;
+    listaProdutos.innerHTML = html;
   }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-  </html><!DOCTYPE html>
+        </html><!DOCTYPE html>
 <html lang="pt-AO">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel do Usuário - ELO Commerce</title>
+  <title>Painel - ELO Commerce</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {background:#000;color:#fff;font-family:"Poppins",sans-serif;}
-    .navbar{background:linear-gradient(90deg,#b8860b 0%,#000 100%);}
-    .navbar-brand{color:#fff!important;font-weight:700;}
-    .btn-gold{background:#b8860b;color:#fff;border:none;border-radius:20px;padding:8px 16px;transition:.3s;}
-    .btn-gold:hover{background:#ffcc00;color:#000;}
-    .sidebar{position:fixed;top:56px;left:0;width:220px;height:100%;background:#111;border-right:1px solid #222;padding-top:20px;}
-    .sidebar a{display:block;padding:10px 20px;color:#ffcc00;text-decoration:none;transition:.3s;}
-    .sidebar a:hover{background:#b8860b;color:#000;}
-    .content{margin-left:230px;padding:30px;}
-    table{color:#fff;}
-    table th{color:#ffcc00;}
-    .card{background:#111;border:1px solid #222;border-radius:10px;padding:15px;}
+    .navbar {background:linear-gradient(90deg,#b8860b 0%,#000 100%);}
+    .navbar-brand {font-weight:bold;color:#fff!important;}
+    .container {margin-top:100px;}
+    .btn-gold {background-color:#b8860b;color:#fff;border:none;border-radius:25px;padding:10px 20px;font-weight:600;}
+    .btn-gold:hover {background-color:#ffcc00;color:#000;}
+    .card {background:#111;border:1px solid #222;border-radius:10px;}
+    .card h5 {color:#ffcc00;}
+    .form-control {background:#222;border:1px solid #333;color:#fff;}
+    .form-control:focus {border-color:#b8860b;box-shadow:none;}
   </style>
 </head>
 <body>
 
+<!-- Navbar -->
 <nav class="navbar navbar-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand">⚜️ Painel do Usuário</a>
+    <a class="navbar-brand">⚜️ ELO Commerce</a>
     <div>
       <button id="homeBtn" class="btn btn-outline-light me-2">🏠 Início</button>
-      <button id="logoutBtn" class="btn btn-outline-light">Sair</button>
+      <button id="logoutBtn" class="btn btn-outline-danger">Sair</button>
     </div>
   </div>
 </nav>
 
-<div class="sidebar">
-  <a href="#" data-section="perfil">👤 Perfil</a>
-  <a href="#" data-section="produtos">🛍️ Meus Produtos</a>
-  <a href="#" data-section="vendas">💸 Minhas Vendas</a>
-  <a href="#" data-section="carteira">💰 Carteira</a>
-  <a href="#" data-section="afiliados">🤝 Afiliados</a>
-  <a href="#" data-section="planos">📦 Planos</a>
-</div>
+<!-- Conteúdo -->
+<div class="container">
+  <h2 class="text-warning mb-4 text-center">💼 Painel do Usuário</h2>
 
-<div class="content">
-  <h2 class="text-warning mb-4">Bem-vindo ao seu painel</h2>
-  <div id="conteudo">
-    <p>Selecione uma opção na barra lateral.</p>
+  <!-- Saldo -->
+  <div class="card p-3 mb-4">
+    <h5>Carteira</h5>
+    <p>Saldo disponível: <strong id="saldo">0.00 KZ</strong></p>
+    <button id="addFundsBtn" class="btn-gold me-2">➕ Adicionar Fundos</button>
+    <button id="withdrawBtn" class="btn btn-outline-light">💸 Sacar</button>
+  </div>
+
+  <!-- Criar produto -->
+  <div class="card p-3 mb-4">
+    <h5>📦 Criar Novo Produto</h5>
+    <form id="produtoForm">
+      <input type="text" class="form-control mb-2" id="nomeProduto" placeholder="Nome do produto" required>
+      <textarea class="form-control mb-2" id="descricaoProduto" placeholder="Descrição do produto"></textarea>
+      <input type="number" class="form-control mb-2" id="precoProduto" placeholder="Preço (KZ)" required>
+      <input type="file" class="form-control mb-2" id="arquivoProduto" accept="image/*,video/*">
+      <button type="submit" class="btn-gold w-100">Salvar Produto</button>
+    </form>
+  </div>
+
+  <!-- Lista de produtos -->
+  <div class="card p-3 mb-4">
+    <h5>🛍️ Meus Produtos</h5>
+    <div id="listaProdutos" class="mt-3"></div>
   </div>
 </div>
 
-<!-- Firebase -->
+<footer class="text-center mt-5 py-3 bg-black text-secondary">
+  &copy; 2025 ELO Commerce. Todos os direitos reservados.
+</footer>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, addDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, setDoc, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
 
   const firebaseConfig = {
@@ -285,151 +268,100 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
   const storage = getStorage(app);
-  const conteudo = document.getElementById("conteudo");
 
-  // Autenticação
+  const saldoEl = document.getElementById("saldo");
+  const produtoForm = document.getElementById("produtoForm");
+  const listaProdutos = document.getElementById("listaProdutos");
+
+  let userEmail = "";
+
+  // 🔹 Verifica login
   onAuthStateChanged(auth, async (user) => {
-    if (!user) window.location.href = "login.html";
-    else carregarPerfil(user.email);
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+    userEmail = user.email;
+    await carregarCarteira();
+    await carregarProdutos();
   });
 
-  document.getElementById("logoutBtn").addEventListener("click", async ()=>{
+  // 🔹 Botão sair
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
     await signOut(auth);
-    window.location.href = "login.html";
-  });
-  document.getElementById("homeBtn").addEventListener("click", ()=> window.location.href="index.html");
-
-  // Seções
-  document.querySelectorAll(".sidebar a").forEach(link=>{
-    link.addEventListener("click", e=>{
-      e.preventDefault();
-      const sec = link.getAttribute("data-section");
-      if(sec==="perfil") mostrarPerfil();
-      if(sec==="produtos") mostrarProdutos();
-      if(sec==="vendas") mostrarVendas();
-      if(sec==="carteira") mostrarCarteira();
-      if(sec==="afiliados") mostrarAfiliados();
-      if(sec==="planos") mostrarPlanos();
-    });
+    window.location.href = "index.html";
   });
 
-  // ---------------- SEÇÃO PERFIL ----------------
-  async function carregarPerfil(email){
-    const snap = await getDoc(doc(db,"usuarios",email));
-    if(snap.exists()){
-      const d = snap.data();
-      conteudo.innerHTML = `
-        <div class='card text-center'>
-          <img src='${d.foto || "https://via.placeholder.com/100"}' class='rounded-circle mb-3' width='100'>
-          <h4>${d.nome || "Usuário"}</h4>
-          <p>${d.bio || ""}</p>
-          <input type='file' id='fotoInput' class='form-control mb-2' accept='image/*'>
-          <textarea id='bioInput' class='form-control mb-2' placeholder='Sua bio...'>${d.bio||""}</textarea>
-          <button class='btn-gold' id='salvarPerfil'>Salvar</button>
+  // 🔹 Voltar ao início
+  document.getElementById("homeBtn").addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
+
+  // 🔹 Carregar carteira
+  async function carregarCarteira() {
+    const refDoc = doc(db, "usuarios", userEmail);
+    const snap = await getDoc(refDoc);
+    if (snap.exists()) {
+      const data = snap.data();
+      saldoEl.textContent = `${(data.saldo ?? 0).toFixed(2)} KZ`;
+    } else {
+      await setDoc(refDoc, { email: userEmail, saldo: 0 });
+    }
+  }
+
+  // 🔹 Criar produto
+  produtoForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const nome = document.getElementById("nomeProduto").value;
+    const descricao = document.getElementById("descricaoProduto").value;
+    const preco = parseFloat(document.getElementById("precoProduto").value);
+    const arquivo = document.getElementById("arquivoProduto").files[0];
+    let arquivoURL = "";
+
+    try {
+      if (arquivo) {
+        const fileRef = ref(storage, "produtos/" + userEmail + "/" + arquivo.name);
+        await uploadBytes(fileRef, arquivo);
+        arquivoURL = await getDownloadURL(fileRef);
+      }
+
+      await addDoc(collection(db, "produtos"), {
+        nome, descricao, preco, arquivoURL,
+        vendedor: userEmail,
+        criadoEm: new Date()
+      });
+
+      alert("✅ Produto salvo com sucesso!");
+      produtoForm.reset();
+      carregarProdutos();
+    } catch (err) {
+      alert("Erro ao salvar: " + err.message);
+    }
+  });
+
+  // 🔹 Carregar produtos do usuário
+  async function carregarProdutos() {
+    listaProdutos.innerHTML = "<p>Carregando...</p>";
+    const q = query(collection(db, "produtos"), where("vendedor", "==", userEmail));
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      listaProdutos.innerHTML = "<p class='text-muted'>Nenhum produto cadastrado.</p>";
+      return;
+    }
+    let html = "";
+    snap.forEach(docSnap => {
+      const p = docSnap.data();
+      html += `
+        <div class="border p-3 mb-3 rounded">
+          <h6>${p.nome}</h6>
+          <p>${p.descricao ?? ""}</p>
+          <p><strong>${p.preco} KZ</strong></p>
+          ${p.arquivoURL ? `<img src="${p.arquivoURL}" width="120" class="rounded">` : ""}
         </div>`;
-      document.getElementById("salvarPerfil").onclick = ()=>salvarPerfil(email);
-    }
-  }
-
-  async function salvarPerfil(email){
-    const file = document.getElementById("fotoInput").files[0];
-    const bio = document.getElementById("bioInput").value;
-    let fotoURL="";
-    if(file){
-      const fileRef = ref(storage, "usuarios/"+email+".jpg");
-      await uploadBytes(fileRef,file);
-      fotoURL = await getDownloadURL(fileRef);
-    }
-    await updateDoc(doc(db,"usuarios",email),{bio:bio,foto:fotoURL});
-    alert("Perfil atualizado!");
-  }
-
-  // ---------------- SEÇÃO PRODUTOS ----------------
-  async function mostrarProdutos(){
-    conteudo.innerHTML = `
-      <div class='card'>
-        <h4 class='text-warning mb-3'>Adicionar Produto</h4>
-        <input id='nomeProd' class='form-control mb-2' placeholder='Nome do produto'>
-        <textarea id='descProd' class='form-control mb-2' placeholder='Descrição'></textarea>
-        <input id='precoProd' class='form-control mb-2' placeholder='Preço (Kz ou USD)'>
-        <select id='tipoProd' class='form-control mb-2'>
-          <option value='fisico'>Físico</option>
-          <option value='digital'>Digital</option>
-        </select>
-        <input type='file' id='fotoProd' accept='image/*,video/*' class='form-control mb-2'>
-        <button class='btn-gold' id='btnSalvarProd'>Salvar Produto</button>
-      </div>`;
-    document.getElementById("btnSalvarProd").onclick = salvarProduto;
-  }
-
-  async function salvarProduto(){
-    const user = auth.currentUser;
-    const nome = nomeProd.value, desc = descProd.value, preco = precoProd.value, tipo = tipoProd.value;
-    const file = fotoProd.files[0];
-    let midiaURL="";
-    if(file){
-      const fileRef = ref(storage, "produtos/"+user.uid+"/"+file.name);
-      await uploadBytes(fileRef,file);
-      midiaURL = await getDownloadURL(fileRef);
-    }
-    await addDoc(collection(db,"produtos"),{
-      vendedor:user.email, nome, desc, preco, tipo, midia:midiaURL, criadoEm:new Date()
     });
-    alert("Produto adicionado!");
-  }
-
-  // ---------------- SEÇÃO VENDAS ----------------
-  async function mostrarVendas(){
-    conteudo.innerHTML="<p class='text-warning'>Carregando vendas...</p>";
-    const snap = await getDocs(collection(db,"vendas"));
-    if(snap.empty){conteudo.innerHTML="<p>Nenhuma venda registrada.</p>";return;}
-    let html="<table class='table'><thead><tr><th>Produto</th><th>Comprador</th><th>Valor</th></tr></thead><tbody>";
-    snap.forEach(d=>{const v=d.data();html+=`<tr><td>${v.produto}</td><td>${v.comprador}</td><td>${v.valor}</td></tr>`});
-    conteudo.innerHTML=html+"</tbody></table>";
-  }
-
-  // ---------------- SEÇÃO CARTEIRA ----------------
-  async function mostrarCarteira(){
-    conteudo.innerHTML=`
-      <div class='card text-center'>
-        <h4 class='text-warning'>Carteira</h4>
-        <p>Saldo: <strong id='saldoValor'>Carregando...</strong></p>
-        <button class='btn-gold mb-2' id='addFunds'>Adicionar Fundos</button>
-        <button class='btn-gold mb-2' id='sacar'>Sacar</button>
-      </div>`;
-    document.getElementById("addFunds").onclick=()=>alert("Função PayPal em implementação real.");
-    document.getElementById("sacar").onclick=()=>alert("Saque solicitado!");
-  }
-
-  // ---------------- SEÇÃO AFILIADOS ----------------
-  async function mostrarAfiliados(){
-    const user=auth.currentUser;
-    conteudo.innerHTML=`
-      <div class='card text-center'>
-        <h4 class='text-warning'>Programa de Afiliados</h4>
-        <p>Compartilhe seu link e ganhe 10% por venda.</p>
-        <p><input class='form-control' readonly value='https://elo-commerce.com/?ref=${user.email}'></p>
-      </div>`;
-  }
-
-  // ---------------- SEÇÃO PLANOS ----------------
-  async function mostrarPlanos(){
-    conteudo.innerHTML=`
-      <div class='text-center'>
-        <h3 class='text-warning mb-3'>Assine o Plano Premium</h3>
-        <p>Tenha loja ilimitada e destaque automático por apenas <strong>10 USD/mês</strong>.</p>
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-          <input type="hidden" name="cmd" value="_xclick">
-          <input type="hidden" name="business" value="oficialelo270@gmail.com">
-          <input type="hidden" name="item_name" value="Plano Premium ELO Commerce">
-          <input type="hidden" name="currency_code" value="USD">
-          <input type="hidden" name="amount" value="10.00">
-          <button class='btn-gold'>Assinar via PayPal</button>
-        </form>
-      </div>`;
+    listaProdutos.innerHTML = html;
   }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
   </html>
