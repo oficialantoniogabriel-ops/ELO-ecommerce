@@ -8,36 +8,37 @@
   <script src="https://kit.fontawesome.com/a2e0e6ad3b.js" crossorigin="anonymous"></script>
   <style>
     body {
-      background-color: #000;
-      color: #fff;
+      background-color: #fff;
+      color: #000;
       font-family: "Poppins", sans-serif;
     }
     .navbar {
-      background: linear-gradient(90deg, #b8860b, #000);
-      padding: 12px;
+      background: linear-gradient(90deg, #b8860b, #fff);
+      padding: 10px;
     }
     .navbar-brand {
       font-weight: bold;
-      color: #fff;
+      color: #000;
     }
     .sidebar {
-      background-color: #111;
+      background-color: #f8f8f8;
       padding-top: 20px;
       height: 100vh;
       position: fixed;
       width: 220px;
-      border-right: 1px solid #222;
+      border-right: 2px solid #b8860b;
     }
     .sidebar a {
-      color: #ffcc00;
+      color: #b8860b;
       display: block;
       padding: 12px 20px;
       text-decoration: none;
       transition: 0.3s;
+      font-weight: 500;
     }
     .sidebar a:hover {
       background-color: #b8860b;
-      color: #000;
+      color: #fff;
     }
     .content {
       margin-left: 230px;
@@ -56,15 +57,14 @@
       color: #000;
     }
     .card {
-      background-color: #111;
-      border: 1px solid #222;
-      color: #fff;
+      background-color: #fff8e1;
+      border: 1px solid #b8860b;
       border-radius: 10px;
       padding: 20px;
       margin-bottom: 20px;
     }
     .card h5 {
-      color: #ffcc00;
+      color: #b8860b;
     }
     @media(max-width:768px){
       .sidebar {width:100%; height:auto; position:relative; display:flex; overflow-x:auto;}
@@ -75,10 +75,10 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark">
+<nav class="navbar navbar-light">
   <div class="container-fluid">
     <a class="navbar-brand"><i class="fas fa-store"></i> ELO Commerce</a>
-    <button id="logoutBtn" class="btn btn-outline-light">Sair</button>
+    <button id="logoutBtn" class="btn btn-outline-dark">Sair</button>
   </div>
 </nav>
 
@@ -87,14 +87,13 @@
   <a href="#" data-section="produtos"><i class="fas fa-box"></i> Produtos</a>
   <a href="#" data-section="vendas"><i class="fas fa-shopping-cart"></i> Vendas</a>
   <a href="#" data-section="carteira"><i class="fas fa-wallet"></i> Carteira</a>
-  <a href="#" data-section="afiliados"><i class="fas fa-users"></i> Afiliados</a>
   <a href="#" data-section="perfil"><i class="fas fa-user-circle"></i> Perfil</a>
 </div>
 
 <div class="content">
   <div id="conteudo">
     <h3 class="text-warning">Bem-vindo(a) à sua loja ELO Commerce!</h3>
-    <p>Gerencie seus produtos, acompanhe vendas e controle sua carteira aqui.</p>
+    <p>Gerencie produtos, vendas e sua carteira aqui.</p>
   </div>
 </div>
 
@@ -102,7 +101,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDocs, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
@@ -119,9 +118,18 @@
 
   const conteudo = document.getElementById("conteudo");
 
-  // 🔹 Autenticação
-  onAuthStateChanged(auth, user => {
-    if (!user) window.location.href = "login.html";
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    // 🔹 Cria carteira se não existir
+    const carteiraRef = doc(db, "carteira", user.email);
+    const carteiraSnap = await getDoc(carteiraRef);
+    if (!carteiraSnap.exists()) {
+      await setDoc(carteiraRef, { saldoKZ: 0, saldoUSD: 0, dono: user.email });
+    }
   });
 
   // 🔹 Logout
@@ -130,32 +138,34 @@
     window.location.href = "login.html";
   });
 
-  // 🔹 Carregar seções
+  // 🔹 Seções
   async function carregarSecao(sec) {
     if (sec === "inicio") {
       conteudo.innerHTML = `<h4 class='text-warning'>📊 Painel Geral</h4>
-      <p>Veja um resumo das suas atividades na plataforma.</p>`;
+      <p>Acompanhe suas vendas, carteira e produtos.</p>`;
     }
 
-    // Produtos
+    // 🛍️ Produtos
     if (sec === "produtos") {
       conteudo.innerHTML = `
         <h4 class='text-warning mb-3'>🛍️ Seus Produtos</h4>
         <button class="btn-gold mb-3" id="novoProduto">+ Novo Produto</button>
-        <div id="listaProdutos">Carregando produtos...</div>
+        <div id="listaProdutos">Carregando...</div>
       `;
 
       const snap = await getDocs(collection(db, "produtos"));
       let html = "";
       snap.forEach(docSnap => {
         const p = docSnap.data();
-        html += `
-          <div class="card">
-            <h5>${p.nome}</h5>
-            <img src="${p.imagem || 'https://via.placeholder.com/200'}" class="img-fluid rounded mb-2" width="150">
-            <p>${p.descricao || 'Sem descrição'}</p>
-            <p><b>Preço:</b> ${p.preco || '0'} kz</p>
-          </div>`;
+        if (p.vendedor === auth.currentUser.email) {
+          html += `
+            <div class="card">
+              <h5>${p.nome}</h5>
+              <img src="${p.imagem || 'https://via.placeholder.com/200'}" class="img-fluid rounded mb-2" width="150">
+              <p>${p.descricao}</p>
+              <p><b>Preço:</b> ${p.preco} KZ</p>
+            </div>`;
+        }
       });
       document.getElementById("listaProdutos").innerHTML = html || "<p>Nenhum produto cadastrado.</p>";
 
@@ -176,23 +186,44 @@
           await addDoc(collection(db, "produtos"), {
             nome: nome.value,
             descricao: descricao.value,
-            preco: preco.value,
+            preco: parseFloat(preco.value),
             imagem: imagem.value,
-            vendedor: user.email
+            vendedor: user.email,
+            data: new Date().toISOString()
           });
-          alert("✅ Produto salvo com sucesso!");
+          alert("✅ Produto criado com sucesso!");
           carregarSecao("produtos");
         });
       });
     }
 
-    if (sec === "vendas") conteudo.innerHTML = "<p class='text-warning'>🛒 Suas vendas aparecerão aqui.</p>";
-    if (sec === "carteira") conteudo.innerHTML = "<p class='text-warning'>💰 Saldo atual: em breve real.</p>";
-    if (sec === "afiliados") conteudo.innerHTML = "<p class='text-warning'>🤝 Sistema de afiliados em breve.</p>";
-    if (sec === "perfil") conteudo.innerHTML = "<p class='text-warning'>👤 Atualize suas informações de perfil em breve.</p>";
+    // 💰 Carteira
+    if (sec === "carteira") {
+      const user = auth.currentUser;
+      const docRef = doc(db, "carteira", user.email);
+      const snap = await getDoc(docRef);
+      const data = snap.data();
+
+      conteudo.innerHTML = `
+        <h4 class="text-warning">💰 Sua Carteira</h4>
+        <p><b>Saldo (KZ):</b> ${data.saldoKZ.toFixed(2)}</p>
+        <p><b>Saldo (USD):</b> ${data.saldoUSD.toFixed(2)}</p>
+      `;
+    }
+
+    // 🛒 Vendas
+    if (sec === "vendas") {
+      conteudo.innerHTML = `<p class='text-warning'>🛒 Suas vendas aparecerão aqui automaticamente.</p>`;
+    }
+
+    if (sec === "perfil") {
+      conteudo.innerHTML = `
+        <h4 class='text-warning'>👤 Meu Perfil</h4>
+        <p>Email: ${auth.currentUser.email}</p>
+      `;
+    }
   }
 
-  // Sidebar
   document.querySelectorAll(".sidebar a").forEach(link => {
     link.addEventListener("click", e => {
       e.preventDefault();
@@ -202,4 +233,4 @@
 </script>
 
 </body>
-                                                      </html>
+  </html>
