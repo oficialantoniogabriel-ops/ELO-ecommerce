@@ -1,133 +1,181 @@
 <!DOCTYPE html>
-<html lang="pt-AO">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ELO Commerce - Conectando Empreendedores Africanos</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELO Commerce</title>
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/891/891462.png">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body { background-color: #000; color: #f5f5f5; font-family: "Poppins", sans-serif; scroll-behavior: smooth; }
-    nav.navbar { background: linear-gradient(90deg, #b8860b 0%, #000 100%); }
-    .navbar-brand { color: #fff !important; font-weight: bold; font-size: 1.4rem; }
-    .navbar-nav .nav-link { color: #f5f5f5 !important; font-weight: 500; transition: color 0.3s ease; }
-    .navbar-nav .nav-link:hover { color: #ffcc00 !important; }
-    .hero { background: linear-gradient(135deg, #b8860b, #000); padding: 120px 0; color: #fff; text-align: center; }
-    .hero h1 { font-size: 2.5rem; font-weight: 700; }
-    .hero p { font-size: 1.2rem; margin: 20px 0 40px; }
-    .btn-gold { background-color: #b8860b; color: #fff; border: none; padding: 12px 28px; border-radius: 30px; font-weight: 600; transition: all 0.3s ease; }
-    .btn-gold:hover { background-color: #ffcc00; color: #000; transform: scale(1.05); }
-    .section { padding: 80px 0; }
-    .section h2 { color: #ffcc00; font-weight: 700; margin-bottom: 40px; }
-    .card { background-color: #111; border: 1px solid #222; border-radius: 12px; color: #fff; transition: all 0.3s ease; }
-    .card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(255,215,0,0.2); }
-    .card img { border-top-left-radius: 12px; border-top-right-radius: 12px; height: 200px; object-fit: cover; }
-    footer { background: #000; color: #aaa; padding: 20px 0; font-size: 0.9rem; }
-    .price-tag { background: #b8860b; color: #000; padding: 3px 8px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      background-color: #000;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(90deg, #b8860b, #000);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    header h1 {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 70%;
+      height: 100%;
+      background: linear-gradient(180deg, #b8860b, #000);
+      transition: left 0.3s ease;
+      padding-top: 70px;
+      z-index: 999;
+    }
+
+    nav.active {
+      left: 0;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    nav ul li {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      font-size: 18px;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #ffcc00;
+    }
+
+    .btn-cadastrar {
+      display: block;
+      background-color: #b8860b;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      width: 80%;
+      margin: 20px auto;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-cadastrar:hover {
+      background-color: #ffcc00;
+      color: #000;
+    }
+
+    main {
+      margin-top: 100px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #ffcc00;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+
+    p {
+      color: #ccc;
+      font-size: 1rem;
+      margin-bottom: 25px;
+    }
+
+    .btn-planos {
+      background-color: #b8860b;
+      color: #fff;
+      border: none;
+      padding: 14px 25px;
+      border-radius: 40px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-planos:hover {
+      background-color: #ffcc00;
+      color: #000;
+    }
   </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark">
-  <div class="container">
-    <a class="navbar-brand" href="index.html">⚜️ ELO Commerce</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="nav">
-      <ul class="navbar-nav">
-        <li class="nav-item"><a class="nav-link" href="#inicio">Início</a></li>
-        <li class="nav-item"><a class="nav-link" href="#produtos">Produtos</a></li>
-        <li class="nav-item"><a class="nav-link" href="planos.html">Planos</a></li>
-        <li class="nav-item"><a class="nav-link" href="afiliados.html">Afiliados</a></li>
-        <li class="nav-item"><a class="nav-link" href="carteira.html">Carteira</a></li>
-        <li class="nav-item"><a class="nav-link" href="painel.html">Painel</a></li>
-        <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-        <li class="nav-item"><a class="nav-link btn btn-gold ms-2" href="criar.html">Cadastrar</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
+  <header>
+    <h1>💠 ELO Commerce</h1>
+    <button class="menu-toggle" id="menu-btn">☰</button>
+  </header>
 
-<!-- Hero -->
-<section class="hero" id="inicio">
-  <div class="container">
-    <h1>Conectando empreendedores africanos ao mercado global</h1>
-    <p>Crie, venda e cresça com o ELO Commerce — a plataforma feita para o sucesso digital africano.</p>
-    <a href="planos.html" class="btn-gold">Ver Planos</a>
-  </div>
-</section>
+  <nav id="side-menu">
+    <ul>
+      <li><a href="index.html">🏠 Início</a></li>
+      <li><a href="loja.html">🛍️ Produtos</a></li>
+      <li><a href="planos.html">📦 Planos</a></li>
+      <li><a href="afiliados.html">🤝 Afiliados</a></li>
+      <li><a href="carteira.html">💰 Carteira</a></li>
+      <li><a href="painel.html">📊 Painel</a></li>
+      <li><a href="login.html">🔐 Login</a></li>
+    </ul>
+    <a href="criar.html" class="btn-cadastrar">Cadastrar</a>
+  </nav>
 
-<!-- Produtos -->
-<section id="produtos" class="section text-center">
-  <div class="container">
-    <h2>🛍️ Produtos em Destaque</h2>
-    <div class="row" id="listaProdutos">Carregando produtos...</div>
-  </div>
-</section>
+  <main>
+    <h2>Conectando empreendedores africanos ao mercado global</h2>
+    <p>Crie, venda e cresça com o <b>ELO Commerce</b> — a plataforma feita para o sucesso digital africano.</p>
+    <a href="planos.html" class="btn-planos">Ver Planos</a>
+  </main>
 
-<!-- Afiliados -->
-<section class="section bg-dark text-center">
-  <div class="container">
-    <h2>Programa de Afiliados</h2>
-    <p class="mb-4">Ganhe comissões promovendo produtos africanos e ajudando empreendedores a crescer.</p>
-    <a href="afiliados.html" class="btn-gold">Seja um Afiliado</a>
-  </div>
-</section>
+  <script>
+    const menuBtn = document.getElementById('menu-btn');
+    const sideMenu = document.getElementById('side-menu');
 
-<!-- Rodapé -->
-<footer class="text-center">
-  &copy; 2025 ELO Commerce. Todos os direitos reservados.
-</footer>
-
-<!-- Firebase e Produtos -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
-    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
-    projectId: "elo-ecommerce-ecd87",
-    storageBucket: "elo-ecommerce-ecd87.appspot.com",
-    messagingSenderId: "375574231770",
-    appId: "1:375574231770:web:78279cb6aac72c454703e3"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  async function carregarProdutos() {
-    const lista = document.getElementById("listaProdutos");
-    lista.innerHTML = "Carregando produtos...";
-    const snap = await getDocs(collection(db, "produtos"));
-    if (snap.empty) {
-      lista.innerHTML = "<p>Nenhum produto disponível ainda.</p>";
-      return;
-    }
-    let html = "";
-    snap.forEach(doc => {
-      const p = doc.data();
-      html += `
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <img src="${p.imagem || 'https://via.placeholder.com/400x200'}" alt="${p.nome}">
-            <div class="card-body">
-              <h5 class="card-title">${p.nome}</h5>
-              <span class="price-tag">${p.preco?.toFixed(2)} USD</span>
-              <p class="card-text mt-2">${p.descricao || ''}</p>
-              <a href="produto.html?id=${doc.id}" class="btn-gold btn-sm">Ver Produto</a>
-            </div>
-          </div>
-        </div>`;
+    menuBtn.addEventListener('click', () => {
+      sideMenu.classList.toggle('active');
     });
-    lista.innerHTML = html;
-  }
-
-  carregarProdutos();
-</script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  </script>
 </body>
-  </html>
+    </html>
