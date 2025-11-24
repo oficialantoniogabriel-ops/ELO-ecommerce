@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+here<!DOCTYPE html>
 <html lang="pt-AO">
 <head>
   <meta charset="UTF-8">
@@ -63,6 +63,14 @@
       background-color: #ffcc00;
       color: #000;
     }
+    .card {
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 20px;
+      color: #fff;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
@@ -83,7 +91,8 @@
   <a href="#" data-section="saques">💰 Saques</a>
   <a href="#" data-section="planos">📦 Planos</a>
   <a href="#" data-section="vendas">📊 Vendas</a>
-  <a href="carteira.html">💰 Carteira</a> <!-- ✅ Acesso direto à carteira -->
+  <a href="#" data-section="avisos">📢 Enviar Aviso</a>
+  <a href="carteira.html">💰 Carteira</a>
 </div>
 
 <!-- Conteúdo -->
@@ -98,9 +107,8 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, addDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  // 🔹 Configuração Firebase (já a sua oficial)
   const firebaseConfig = {
     apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
     authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
@@ -113,20 +121,20 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-
   const conteudo = document.getElementById("conteudo");
 
-  // Autenticação
+  // 🔹 Verifica login
   onAuthStateChanged(auth, user => {
     if (!user) window.location.href = "login.html";
   });
 
+  // 🔹 Logout
   document.getElementById("logoutBtn").addEventListener("click", async () => {
     await signOut(auth);
     window.location.href = "login.html";
   });
 
-  // Função para carregar coleções do Firestore
+  // 🔹 Carregar coleções
   async function carregarColecao(nome) {
     conteudo.innerHTML = `<p class='text-warning'>Carregando ${nome}...</p>`;
     const snap = await getDocs(collection(db, nome));
@@ -151,16 +159,59 @@
     conteudo.innerHTML = html;
   }
 
-  // Menu lateral
+  // 🔹 Sistema de Avisos
+  function mostrarFormularioAviso() {
+    conteudo.innerHTML = `
+      <div class="card">
+        <h4 class="text-warning mb-3">📢 Enviar Aviso aos Usuários</h4>
+        <form id="avisoForm">
+          <div class="mb-3">
+            <label class="form-label">Título</label>
+            <input type="text" id="tituloAviso" class="form-control bg-dark text-white" placeholder="Título do aviso" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Mensagem</label>
+            <textarea id="mensagemAviso" class="form-control bg-dark text-white" rows="4" placeholder="Escreva a mensagem do aviso..." required></textarea>
+          </div>
+          <button type="submit" class="btn-gold">Enviar Aviso</button>
+        </form>
+      </div>
+    `;
+
+    const avisoForm = document.getElementById("avisoForm");
+    avisoForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      const titulo = document.getElementById("tituloAviso").value;
+      const mensagem = document.getElementById("mensagemAviso").value;
+
+      try {
+        await addDoc(collection(db, "avisos"), {
+          titulo,
+          mensagem,
+          criadoEm: Timestamp.now()
+        });
+        alert("✅ Aviso enviado com sucesso!");
+        avisoForm.reset();
+      } catch (error) {
+        alert("Erro ao enviar aviso: " + error.message);
+      }
+    });
+  }
+
+  // 🔹 Menu lateral
   document.querySelectorAll(".sidebar a[data-section]").forEach(link => {
     link.addEventListener("click", e => {
       e.preventDefault();
       const sec = link.getAttribute("data-section");
-      carregarColecao(sec);
+      if (sec === "avisos") {
+        mostrarFormularioAviso();
+      } else {
+        carregarColecao(sec);
+      }
     });
   });
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html>
+  </html>
