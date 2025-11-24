@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ELO Commerce - Produtos</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
+    }
+    .navbar-brand {
+      font-weight: bold;
+      color: #fff !important;
+      font-size: 1.4rem;
+    }
+    .btn-gold {
+      background-color: #b8860b;
+      color: #fff;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 24px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .btn-gold:hover {
+      background-color: #ffcc00;
+      color: #000;
+      transform: scale(1.05);
+    }
+    footer {
+      background-color: #111;
+      padding: 15px;
+      text-align: center;
+      color: #777;
+      margin-top: 50px;
+    }
+    .produto-card {
+      background: #111;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      text-align: center;
+      transition: 0.3s;
+    }
+    .produto-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 10px #b8860b;
+    }
+    img, video {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand">⚜️ ELO Commerce</a>
+    <div class="ms-auto">
+      <a href="painel.html" class="btn btn-outline-light me-2">Painel</a>
+      <button id="btnSair" class="btn btn-gold">Sair</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Criar Produto -->
+<div class="container mt-4">
+  <h2 class="text-warning mb-3">🛍️ Criar Produto</h2>
+  <form id="formProduto">
+    <input type="text" name="nome" class="form-control my-2" placeholder="Nome do produto" required>
+    <input type="number" step="0.01" name="preco" class="form-control my-2" placeholder="Preço" required>
+    <textarea name="descricao" class="form-control my-2" placeholder="Descrição"></textarea>
+    <input type="file" name="arquivo" accept="image/*,video/*" class="form-control my-2">
+    <img id="preview" style="display:none;max-width:200px;margin-top:10px;border-radius:8px;">
+    <video id="previewVideo" style="display:none;max-width:200px;margin-top:10px;border-radius:8px;" controls></video>
+    <button class="btn btn-gold w-100 mt-3">Salvar Produto</button>
+  </form>
+</div>
+
+<!-- Lista de Produtos -->
+<div class="container mt-5">
+  <h3 class="text-warning mb-3">📦 Meus Produtos</h3>
+  <div id="listaProdutos" class="row"></div>
+</div>
+
+<footer>
+  &copy; 2025 ⚜️ ELO Commerce — Todos os direitos reservados.
+</footer>
+
+<!-- Firebase e JS -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
+
+  // ✅ Configuração Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.appspot.com",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  const form = document.getElementById("formProduto");
+  const lista = document.getElementById("listaProdutos");
+  const previewImg = document.getElementById("preview");
+  const previewVideo = document.getElementById("previewVideo");
+
+  // 🖼️ Pré-visualização
+  form.arquivo.addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    if (file.type.startsWith("image")) {
+      previewImg.src = url;
+      previewImg.style.display = "block";
+      previewVideo.style.display = "none";
+    } else if (file.type.startsWith("video")) {
+      previewVideo.src = url;
+      previewVideo.style.display = "block";
+      previewImg.style.display = "none";
+    }
+  });
+
+  // 🛒 Criar produto
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (!user) return alert("Por favor, faça login primeiro.");
+
+    const arquivo = form.arquivo.files[0];
+    const nome = form.nome.value.trim();
+    const preco = parseFloat(form.preco.value);
+    const descricao = form.descricao.value.trim();
+
+    try {
+      let urlArquivo = "";
+      if (arquivo) {
+        const caminho = `produtos/${user.uid}_${arquivo.name}`;
+        const storageRef = ref(storage, caminho);
+        await uploadBytes(storageRef, arquivo);
+        urlArquivo = await getDownloadURL(storageRef);
+      }
+
+      await addDoc(collection(db, "produtos"), {
+        nome,
+        preco,
+        descricao,
+        arquivo: urlArquivo,
+        tipo: arquivo ? arquivo.type : null,
+        email: user.email,
+        criadoEm: new Date()
+      });
+
+      alert("✅ Produto criado com sucesso!");
+      form.reset();
+      previewImg.style.display = "none";
+      previewVideo.style.display = "none";
+      carregarProdutos(user.email);
+
+    } catch (erro) {
+      console.error("Erro ao salvar produto:", erro);
+      alert("Erro ao salvar produto: " + erro.message);
+    }
+  });
+
+  // 🧾 Carregar produtos do usuário
+  async function carregarProdutos(email) {
+    lista.innerHTML = "<p>Carregando produtos...</p>";
+    const q = query(collection(db, "produtos"), where("email", "==", email));
+    const snap = await getDocs(q);
+    lista.innerHTML = "";
+    if (snap.empty) {
+      lista.innerHTML = "<p>Nenhum produto cadastrado ainda.</p>";
+      return;
+    }
+
+    snap.forEach(doc => {
+      const p = doc.data();
+      const midia = p.tipo?.startsWith("video")
+        ? `<video src="${p.arquivo}" controls></video>`
+        : `<img src="${p.arquivo}" alt="produto">`;
+      lista.innerHTML += `
+        <div class="col-md-4">
+          <div class="produto-card">
+            ${midia}
+            <h5 class="text-warning mt-2">${p.nome}</h5>
+            <p>${p.descricao}</p>
+            <p><strong>${p.preco.toFixed(2)} USD</strong></p>
+          </div>
+        </div>`;
+    });
+  }
+
+  // 🔐 Autenticação e sessão
+  onAuthStateChanged(auth, user => {
+    if (!user) {
+      window.location.href = "login.html";
+    } else {
+      carregarProdutos(user.email);
+    }
+  });
+
+  // 🚪 Sair
+  document.getElementById("btnSair").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "index.html";
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+  </html>
