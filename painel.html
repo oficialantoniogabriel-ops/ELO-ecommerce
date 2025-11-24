@@ -7,92 +7,97 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      background: #000;
+      background: #0a0f24;
       color: #fff;
       font-family: "Poppins", sans-serif;
     }
     .navbar {
-      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
+      background: linear-gradient(90deg, #004aad, #002e6e);
+      padding: 12px;
     }
     .navbar-brand {
       color: #fff !important;
       font-weight: 700;
     }
+    .btn-blue {
+      background-color: #007bff;
+      border: none;
+      color: #fff;
+      border-radius: 25px;
+      padding: 8px 20px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .btn-blue:hover {
+      background-color: #00b7ff;
+      color: #000;
+      transform: scale(1.05);
+    }
     .sidebar {
+      background-color: #0d1333;
+      width: 230px;
       position: fixed;
-      top: 56px;
+      top: 60px;
+      bottom: 0;
       left: 0;
-      width: 220px;
-      height: 100%;
-      background-color: #111;
-      border-right: 1px solid #222;
-      padding-top: 20px;
+      overflow-y: auto;
+      border-right: 1px solid #1f2a44;
     }
     .sidebar a {
       display: block;
-      padding: 10px 20px;
-      color: #ffcc00;
+      color: #9ab3ff;
+      padding: 12px 20px;
       text-decoration: none;
       transition: 0.3s;
     }
     .sidebar a:hover {
-      background-color: #b8860b;
-      color: #000;
+      background-color: #1c2f60;
+      color: #fff;
     }
     .content {
-      margin-left: 230px;
+      margin-left: 240px;
       padding: 30px;
     }
-    .btn-gold {
-      background-color: #b8860b;
-      color: #fff;
-      border: none;
-      border-radius: 20px;
-      padding: 8px 16px;
-      transition: 0.3s;
-    }
-    .btn-gold:hover {
-      background-color: #ffcc00;
-      color: #000;
-    }
-    table {
-      width: 100%;
+    .card {
+      background-color: #10183a;
+      border: 1px solid #223469;
+      border-radius: 12px;
+      padding: 20px;
       color: #fff;
     }
-    table th {
-      color: #ffcc00;
+    .profile-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #00b7ff;
     }
   </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-dark fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
   <div class="container-fluid">
-    <a class="navbar-brand">⚜️ Painel do Usuário</a>
+    <a class="navbar-brand">⚙️ Painel ELO Commerce</a>
     <div class="ms-auto">
-      <button id="inicioBtn" class="btn btn-outline-light me-2">🏠 Início</button>
-      <button id="logoutBtn" class="btn btn-gold">Sair</button>
+      <button id="homeBtn" class="btn btn-outline-light me-2">🏠 Início</button>
+      <button id="logoutBtn" class="btn btn-blue">Sair</button>
     </div>
   </div>
 </nav>
 
-<!-- Sidebar -->
 <div class="sidebar">
-  <a href="#" data-section="perfil">👤 Perfil</a>
-  <a href="#" data-section="produtos">🛍️ Produtos</a>
-  <a href="#" data-section="vendas">💰 Vendas</a>
-  <a href="#" data-section="carteira">💳 Carteira</a>
-  <a href="painel-lojas.html">🛒 Minhas Lojas</a>
+  <a href="#" data-section="carteira">💰 Carteira</a>
+  <a href="#" data-section="produtos">📦 Meus Produtos</a>
+  <a href="#" data-section="vendas">📊 Minhas Vendas</a>
   <a href="#" data-section="afiliados">🤝 Afiliados</a>
-  <a href="#" data-section="planos">📦 Planos</a>
+  <a href="#" data-section="perfil">👤 Perfil</a>
 </div>
 
-<!-- Conteúdo -->
 <div class="content">
-  <h2 class="text-warning mb-4">Bem-vindo(a) ao seu painel!</h2>
+  <h2 class="text-info mb-4">Bem-vindo(a) ao seu painel</h2>
   <div id="conteudo">
-    <p>Selecione uma seção na barra lateral para gerenciar seus dados.</p>
+    <p>Selecione uma opção no menu para começar.</p>
   </div>
 </div>
 
@@ -100,7 +105,8 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, addDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
@@ -114,54 +120,186 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
   const conteudo = document.getElementById("conteudo");
 
-  onAuthStateChanged(auth, user => {
-    if (!user) window.location.href = "login.html";
-    else conteudo.innerHTML = `<h4 class="text-warning">Olá, ${user.email}</h4><p>Gerencie sua conta, produtos e lojas!</p>`;
+  onAuthStateChanged(auth, async user => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    // Exibe saldo inicial da carteira
+    const carteiraRef = doc(db, "carteira", user.email);
+    const snap = await getDoc(carteiraRef);
+    if (!snap.exists()) {
+      await setDoc(carteiraRef, { saldo: 0, atualizadoEm: new Date() });
+    }
   });
 
   document.getElementById("logoutBtn").addEventListener("click", async () => {
     await signOut(auth);
+    window.location.href = "login.html";
+  });
+
+  document.getElementById("homeBtn").addEventListener("click", () => {
     window.location.href = "index.html";
   });
 
-  document.getElementById("inicioBtn").addEventListener("click", () => {
-    window.location.href = "index.html";
-  });
-
-  // Carregar coleções Firestore dinamicamente
-  async function carregarColecao(nome) {
-    conteudo.innerHTML = `<p class='text-warning'>Carregando ${nome}...</p>`;
-    const snap = await getDocs(collection(db, nome));
-    if (snap.empty) {
-      conteudo.innerHTML = `<p class='text-muted'>Nenhum dado encontrado em "${nome}".</p>`;
-      return;
-    }
-    let html = `<table class="table table-dark table-striped"><thead><tr>`;
-    const firstDoc = snap.docs[0].data();
-    Object.keys(firstDoc).forEach(k => html += `<th>${k}</th>`);
-    html += "</tr></thead><tbody>";
-    snap.forEach(docSnap => {
-      const d = docSnap.data();
-      html += "<tr>";
-      Object.keys(firstDoc).forEach(k => html += `<td>${d[k] ?? "-"}</td>`);
-      html += "</tr>";
-    });
-    html += "</tbody></table>";
-    conteudo.innerHTML = html;
-  }
-
-  document.querySelectorAll(".sidebar a[data-section]").forEach(link => {
-    link.addEventListener("click", e => {
+  // Troca de seção
+  document.querySelectorAll(".sidebar a").forEach(link => {
+    link.addEventListener("click", async e => {
       e.preventDefault();
       const sec = link.getAttribute("data-section");
-      carregarColecao(sec);
+      await carregar(sec);
     });
   });
-</script>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  async function carregar(sec) {
+    conteudo.innerHTML = `<p class='text-info'>Carregando ${sec}...</p>`;
+
+    switch (sec) {
+      case "carteira":
+        await mostrarCarteira();
+        break;
+      case "produtos":
+        await mostrarProdutos();
+        break;
+      case "vendas":
+        await mostrarVendas();
+        break;
+      case "afiliados":
+        await mostrarAfiliados();
+        break;
+      case "perfil":
+        await mostrarPerfil();
+        break;
+    }
+  }
+
+  async function mostrarCarteira() {
+    const user = auth.currentUser;
+    const refDoc = doc(db, "carteira", user.email);
+    const snap = await getDoc(refDoc);
+    const saldo = snap.exists() ? snap.data().saldo : 0;
+
+    conteudo.innerHTML = `
+      <div class="card text-center">
+        <h4>Saldo disponível</h4>
+        <h2 class="text-success">R$ ${saldo.toFixed(2)}</h2>
+        <button class="btn-blue mt-3" id="addFundos">Adicionar Fundos</button>
+      </div>
+    `;
+
+    document.getElementById("addFundos").addEventListener("click", async () => {
+      await setDoc(refDoc, { saldo: saldo + 10 }, { merge: true });
+      alert("R$ 10,00 adicionados à sua carteira!");
+      mostrarCarteira();
+    });
+  }
+
+  async function mostrarProdutos() {
+    conteudo.innerHTML = `
+      <div class="card">
+        <h4>Meus Produtos</h4>
+        <button class="btn-blue mb-3" id="novoProduto">+ Novo Produto</button>
+        <div id="listaProdutos"></div>
+      </div>
+    `;
+
+    document.getElementById("novoProduto").addEventListener("click", async () => {
+      conteudo.innerHTML = `
+        <div class="card">
+          <h4>Criar Produto</h4>
+          <input type="text" id="nomeProd" class="form-control mb-2" placeholder="Nome do produto">
+          <textarea id="descProd" class="form-control mb-2" placeholder="Descrição"></textarea>
+          <input type="number" id="precoProd" class="form-control mb-2" placeholder="Preço">
+          <input type="file" id="arquivoProd" class="form-control mb-3" accept="image/*,video/*">
+          <button class="btn-blue w-100" id="salvarProd">Salvar</button>
+        </div>
+      `;
+
+      document.getElementById("salvarProd").addEventListener("click", async () => {
+        const user = auth.currentUser;
+        const nome = nomeProd.value.trim();
+        const preco = parseFloat(precoProd.value);
+        const file = arquivoProd.files[0];
+
+        if (!nome || !preco || !file) return alert("Preencha todos os campos!");
+
+        const fileRef = ref(storage, `produtos/${user.uid}_${Date.now()}_${file.name}`);
+        await uploadBytes(fileRef, file);
+        const url = await getDownloadURL(fileRef);
+
+        await addDoc(collection(db, "produtos"), {
+          nome, preco, dono: user.email, arquivo: url, criadoEm: new Date()
+        });
+
+        alert("Produto criado com sucesso!");
+        carregar("produtos");
+      });
+    });
+
+    // Lista produtos
+    const snap = await getDocs(collection(db, "produtos"));
+    let html = "";
+    snap.forEach(docSnap => {
+      const d = docSnap.data();
+      html += `
+        <div class="border p-3 mb-2 rounded bg-dark">
+          <strong>${d.nome}</strong> — R$ ${d.preco}
+          <br><img src="${d.arquivo}" width="120">
+        </div>
+      `;
+    });
+    document.getElementById("listaProdutos").innerHTML = html || "<p>Nenhum produto ainda.</p>";
+  }
+
+  async function mostrarVendas() {
+    conteudo.innerHTML = `<div class="card"><h4>Minhas Vendas</h4><p>Nenhuma venda encontrada.</p></div>`;
+  }
+
+  async function mostrarAfiliados() {
+    conteudo.innerHTML = `<div class="card"><h4>Afiliados</h4><p>Em breve...</p></div>`;
+  }
+
+  async function mostrarPerfil() {
+    const user = auth.currentUser;
+    const ref = doc(db, "usuarios", user.email);
+    const snap = await getDoc(ref);
+    const dados = snap.exists() ? snap.data() : {};
+
+    conteudo.innerHTML = `
+      <div class="card text-center">
+        <img src="${dados.foto || "https://via.placeholder.com/100"}" class="profile-img mb-3">
+        <input type="file" id="novaFoto" class="form-control mb-2" accept="image/*">
+        <input type="text" id="novoNome" class="form-control mb-2" placeholder="Seu nome" value="${dados.nome || ""}">
+        <textarea id="novaBio" class="form-control mb-3" placeholder="Sua bio">${dados.bio || ""}</textarea>
+        <button id="salvarPerfil" class="btn-blue w-100">Salvar Alterações</button>
+      </div>
+    `;
+
+    document.getElementById("salvarPerfil").addEventListener("click", async () => {
+      let fotoURL = dados.foto || "";
+      if (novaFoto.files.length > 0) {
+        const file = novaFoto.files[0];
+        const fileRef = ref(storage, `usuarios/${user.uid}.jpg`);
+        await uploadBytes(fileRef, file);
+        fotoURL = await getDownloadURL(fileRef);
+      }
+
+      await setDoc(ref, {
+        nome: novoNome.value,
+        bio: novaBio.value,
+        foto: fotoURL,
+        atualizadoEm: new Date()
+      });
+
+      alert("Perfil atualizado!");
+      mostrarPerfil();
+    });
+  }
+</script>
 </body>
-    </html>
+  </html>
