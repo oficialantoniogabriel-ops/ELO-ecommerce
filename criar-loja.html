@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar Loja - ELO Commerce</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: "Poppins", sans-serif;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #b8860b 0%, #000 100%);
+    }
+    .navbar-brand {
+      color: #fff !important;
+      font-weight: bold;
+    }
+    .container {
+      max-width: 700px;
+      margin-top: 80px;
+    }
+    .card {
+      background-color: #111;
+      border: 1px solid #222;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .btn-gold {
+      background-color: #b8860b;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 18px;
+      transition: 0.3s;
+    }
+    .btn-gold:hover {
+      background-color: #ffcc00;
+      color: #000;
+    }
+    #logoPreview {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ffcc00;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand">⚜️ ELO Commerce</a>
+    <div class="ms-auto">
+      <button id="voltarBtn" class="btn btn-outline-light me-2">⬅️ Voltar</button>
+      <button id="logoutBtn" class="btn btn-gold">Sair</button>
+    </div>
+  </div>
+</nav>
+
+<!-- Criar Loja -->
+<div class="container">
+  <div class="card">
+    <h3 class="text-warning text-center mb-3">🛍️ Criar Sua Loja</h3>
+
+    <div class="text-center">
+      <img id="logoPreview" src="https://via.placeholder.com/120" alt="Logo da Loja">
+      <input type="file" id="uploadLogo" class="form-control bg-dark text-light mb-3">
+    </div>
+
+    <form id="lojaForm">
+      <div class="mb-3">
+        <label class="form-label text-warning">Nome da Loja</label>
+        <input type="text" id="nomeLoja" class="form-control bg-dark text-light" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label text-warning">Descrição</label>
+        <textarea id="descricao" class="form-control bg-dark text-light" rows="3" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label text-warning">Link Personalizado</label>
+        <div class="input-group">
+          <span class="input-group-text bg-dark text-light">elo-commerce.com/</span>
+          <input type="text" id="link" class="form-control bg-dark text-light" placeholder="minha-loja" required>
+        </div>
+      </div>
+      <button type="submit" class="btn-gold w-100">Salvar Loja</button>
+    </form>
+  </div>
+</div>
+
+<footer class="text-center py-3 mt-5" style="background:#111; color:#777;">
+  &copy; 2025 ⚜️ ELO Commerce — Criador de Lojas
+</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAN_7vyt0XcOt6NvOE6MDoBCajUjhToCR0",
+    authDomain: "elo-ecommerce-ecd87.firebaseapp.com",
+    projectId: "elo-ecommerce-ecd87",
+    storageBucket: "elo-ecommerce-ecd87.appspot.com",
+    messagingSenderId: "375574231770",
+    appId: "1:375574231770:web:78279cb6aac72c454703e3"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  const lojaForm = document.getElementById("lojaForm");
+  const uploadLogo = document.getElementById("uploadLogo");
+  const logoPreview = document.getElementById("logoPreview");
+  let userEmail = "";
+
+  // Verifica se usuário está logado
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+    userEmail = user.email;
+    carregarLoja();
+  });
+
+  async function carregarLoja() {
+    const lojaRef = doc(db, "lojas", userEmail);
+    const snap = await getDoc(lojaRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      document.getElementById("nomeLoja").value = data.nome ?? "";
+      document.getElementById("descricao").value = data.descricao ?? "";
+      document.getElementById("link").value = data.link ?? "";
+      logoPreview.src = data.logoURL ?? "https://via.placeholder.com/120";
+    }
+  }
+
+  uploadLogo.addEventListener("change", async () => {
+    const file = uploadLogo.files[0];
+    if (!file) return;
+    const logoRef = ref(storage, "logos/" + userEmail + "/" + file.name);
+    await uploadBytes(logoRef, file);
+    const url = await getDownloadURL(logoRef);
+    logoPreview.src = url;
+    await setDoc(doc(db, "lojas", userEmail), { logoURL: url }, { merge: true });
+  });
+
+  lojaForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const lojaData = {
+      nome: document.getElementById("nomeLoja").value,
+      descricao: document.getElementById("descricao").value,
+      link: document.getElementById("link").value,
+      logoURL: logoPreview.src,
+      dono: userEmail,
+      criadaEm: new Date().toISOString()
+    };
+    await setDoc(doc(db, "lojas", userEmail), lojaData);
+    alert("✅ Loja salva com sucesso!");
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await signOut(auth);
+    window.location.href = "index.html";
+  });
+
+  document.getElementById("voltarBtn").addEventListener("click", () => {
+    window.location.href = "painel.html";
+  });
+</script>
+
+</body>
+    </html>
